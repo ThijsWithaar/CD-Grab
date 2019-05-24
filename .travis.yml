@@ -7,13 +7,10 @@ addons:
   apt:
     packages:
       - cmake
-      - ninja
       - libflac-dev
       - libopus-dev
       - qtbase5-dev
 
 script:
-    - mkdir build
-    - cd build
-    - cmake -GNinja ..
-    - ninja
+    - cmake .
+    - cmake --build .
