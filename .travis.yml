@@ -1,0 +1,44 @@
+language: cpp
+os: linux
+dist: xenial
+compiler: clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-9
+      - cmake
+      - libflac-dev
+      - libopus-dev
+      - libsoxr-dev
+      - qtbase5-dev
+
+before_install:
+  - sudo add-apt-repository ppa:mhier/libboost-latest -y
+  - sudo apt-get update -q
+  - sudo apt-get install libboost1.68-dev -y
+
+install:
+  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
+  - |
+    mkdir -p ${DEPS_DIR}
+    pushd ${DEPS_DIR}
+  - travis_retry git clone https://github.com/catchorg/Catch2.git # Install Catch2
+  - |
+    pushd Catch2
+    git checkout
+    mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX="${DEPS_DIR}/install"
+  - cmake --build . -- install
+  - export CMAKE_PREFIX_PATH="${DEPS_DIR}/install/:$CMAKE_PREFIX_PATH"
+  - popd; popd
+
+script:
+  - BUILD_DIR="${TRAVIS_BUILD_DIR}/build"
+  - mkdir -p ${BUILD_DIR}
+  - pushd ${BUILD_DIR}
+  - cmake -DCMAKE_CXX_COMPILER=g++-9 ..
+  - cmake --build .
+  - popd
