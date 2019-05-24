@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget* parent):
 
 	connect(ui.actionQuit, &QAction::triggered, QApplication::instance(), &QApplication::quit);
 	connect(ui.pbGrab, &QPushButton::clicked, this, &MainWindow::OnGrab);
+	connect(ui.pbEncode, &QPushButton::clicked, this, &MainWindow::OnEncode);
 
 	ui.tvTracks->setModel(&m_trackTable);
 
@@ -66,7 +67,7 @@ void MainWindow::StartCddaThread()
 	connect(ui.cDevice, static_cast<void (QComboBox::*)(const QString&)>(&QComboBox::currentIndexChanged), worker, &CddaWorker::ChangeDevice);
 	connect(ui.pbAbort, &QPushButton::clicked, worker, &CddaWorker::Cancel);
 	connect(this, &MainWindow::Grab, worker, &CddaWorker::Grab);
-	connect(ui.pbEncode, &QPushButton::clicked, worker, &CddaWorker::Encode);
+	connect(this, &MainWindow::Encode, worker, &CddaWorker::Encode);
 	connect(ui.pbEject, &QPushButton::clicked, worker, &CddaWorker::Eject);
 
 	// worker -> main
@@ -132,15 +133,30 @@ void MainWindow::OnProgress(double pct)
 }
 
 
+QString MainWindow::BaseName()
+{
+	QString basename;
+	auto nes = NonEmpty({m_tags.artist, m_tags.title, m_tags.upc});
+	basename = QString::fromStdString(Join(" - ", nes));
+	if(nes.empty())
+		basename.setNum(DiscInfoId(m_tags).id, 16);
+	return basename;
+}
+
+
 void MainWindow::OnGrab()
 {
-	std::string basename;
-	auto nes = NonEmpty({m_tags.artist, m_tags.title, m_tags.upc});
-	basename = Join(" - ", nes);
-	if(nes.empty())
-		basename = "dump";
+	emit Grab(BaseName());
+}
 
-	emit Grab(QString::fromStdString(basename));
+
+void MainWindow::OnEncode()
+{
+	QString basename = BaseName();
+	QString sectorFname = basename + ".sdb";
+	QString flacFname = basename + ".flac";
+
+	emit Encode(sectorFname, flacFname);
 }
 
 

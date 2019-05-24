@@ -3,42 +3,28 @@ os: linux
 dist: xenial
 compiler: clang
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-9
-      - cmake
-      - libflac-dev
-      - libopus-dev
-      - libsoxr-dev
-      - qtbase5-dev
+services:
+ - docker
 
 before_install:
-  - sudo add-apt-repository ppa:mhier/libboost-latest -y
-  - sudo apt-get update -q
-  - sudo apt-get install libboost1.68-dev -y
+ - docker pull debian:sid
+ - docker run -it -d --name build debian:sid
 
 install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - |
-    mkdir -p ${DEPS_DIR}
-    pushd ${DEPS_DIR}
-  - travis_retry git clone https://github.com/catchorg/Catch2.git # Install Catch2
-  - |
-    pushd Catch2
-    git checkout
-    mkdir build && cd build
-  - cmake .. -DCMAKE_CXX_COMPILER=g++-9 -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX="${DEPS_DIR}/install"
-  - cmake --build . -- install
-  - export CMAKE_PREFIX_PATH="${DEPS_DIR}/install/:$CMAKE_PREFIX_PATH"
-  - popd; popd
+ - docker cp "${TRAVIS_BUILD_DIR}" build:/repo
+
+ - docker exec build apt-get update -q
+ - docker exec build apt-get install -y build-essential git cmake clang gnupg
+ - docker exec build apt-get install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev libboost-all-dev
+
+# Depends on gnupg
+#- wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | docker exec build apt-key add -
+ - docker exec build clang -v
+
+ - docker exec build git clone https://github.com/catchorg/Catch2.git /catch2
+ - docker exec build cmake -H/catch2 -B/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
+ - docker exec build cmake --build /catch2.build -- install
 
 script:
-  - BUILD_DIR="${TRAVIS_BUILD_DIR}/build"
-  - mkdir -p ${BUILD_DIR}
-  - pushd ${BUILD_DIR}
-  - cmake -DCMAKE_CXX_COMPILER=g++-9 ..
-  - cmake --build .
-  - popd
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++ -H/repo -B/repo.build
+ - docker exec build cmake --build /repo.build

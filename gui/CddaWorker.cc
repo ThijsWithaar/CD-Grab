@@ -6,6 +6,8 @@
 
 #include <QCoreApplication>
 
+#include <cdgrab/file/flac.h>
+
 
 CoopMutex::CoopMutex():
 	mtx(false)
@@ -17,7 +19,7 @@ CoopMutex::CoopMutex():
 class TryLocker
 {
 public:
-	TryLocker(CoopMutex &lock):
+	TryLocker(CoopMutex &lock) noexcept:
 		m_lock(&lock)
 	{
 		if(!lock.mtx)
@@ -35,7 +37,7 @@ public:
 			m_lock->mtx = false;
 	}
 
-	operator bool() const
+	[[nodiscard]] operator bool() const noexcept
 	{
 		return m_owns;
 	}
@@ -89,7 +91,7 @@ void CddaWorker::Poll()
 
 void CddaWorker::ChangeDevice(const QString dev)
 {
-	emit StatusMessage("Chaning device to " + dev);
+	emit StatusMessage("Changing device to " + dev);
 
 	m_cdda = std::make_unique<CDDA>(dev.toStdString());
 
@@ -130,7 +132,6 @@ void CddaWorker::RefreshToc()
 
 void CddaWorker::Cancel()
 {
-	emit StatusMessage("Operation Cancelled");
 	m_cancelled = true;
 }
 
@@ -179,13 +180,75 @@ void CddaWorker::Grab(QString basename)
 		else
 			m_sdb.Save(sectorFname);
 	}
-	emit StatusMessage("Grabbing complete");
+	if(m_cancelled)
+		emit StatusMessage("Grabbing cancelled");
+	else
+		emit StatusMessage("Grabbing complete");
 }
 
 
-void CddaWorker::Encode()
+void CddaWorker::Encode(QString sectorDbFname, QString flacFname)
 {
-	emit StatusMessage("Encoding");
+	TryLocker lock(m_NonReentrantMutex);
+	if(!lock)
+	{
+		emit StatusMessage("Sector Database busy");
+		return;
+	}
+
+	m_cancelled = false;
+
+	if(m_sdb.SizeInSectors() == 0)
+	{
+		if(!boost::filesystem::is_regular_file(sectorDbFname.toStdString()))
+		{
+			emit StatusMessage("Could not load db for encoding: " + sectorDbFname);
+			return;
+		}
+		emit StatusMessage("Loading " + sectorDbFname);
+		m_sdb = SectorDb(sectorDbFname.toStdString());
+	}
+
+	// Read buffers
+	const int maxNrFrames = 64;
+	std::array<uint8_t, maxNrFrames*(int)CddaFrame::Audio> buf;
+	buffer_view<int16_t > bview_i16(reinterpret_cast< int16_t*>(buf.data()), buf.size()/2);
+
+	// Saving: Bin+Flac
+	int lbasize = m_sdb.SizeInSectors();
+	int nrSamplesPerChannel = lbasize * (int)CddaFrame::Audio/4;
+	FlacStreamEncoder flacEncoder(flacFname.toStdString(), nrSamplesPerChannel);
+
+	auto process = [&](int lba, int nrFrames)
+	{
+		assert(nrFrames <= maxNrFrames);
+
+		m_sdb.ReadAudio(lba, bview_i16, nrFrames);
+		flacEncoder.Append(bview_i16);
+
+		if((lba & 0x3FF) == 0)
+		{
+			double pct = 100. * lba /(lbasize-1);
+			emit Progress(pct);
+			// Need to check for cancellation, see also m_NonReentrantMutex
+			QCoreApplication::processEvents();
+		}
+	};
+
+	int lba;
+	for(lba=0; lba < lbasize - maxNrFrames && !m_cancelled; lba += maxNrFrames)
+	{
+		process(lba, maxNrFrames);
+	}
+
+	if(!m_cancelled)
+	{
+		process(lba, lbasize-lba);	// run-out
+		emit Progress(100.);
+		emit StatusMessage("Encoding complete");
+	}
+	else
+		emit StatusMessage("Encoding cancelled");
 }
 
 

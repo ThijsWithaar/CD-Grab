@@ -32,7 +32,7 @@ public slots:
 	void ChangeDevice(const QString);
 	void Cancel();
 	void Grab(QString basename);
-	void Encode();
+	void Encode(QString sectorDbFname, QString flacFname);
 	void Eject();
 
 private slots:
