@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.12)
 
 # Cmake needs a project name, otherwise Qt linking with winMain goes wrong...
 project(CdGrabProject LANGUAGES CXX)

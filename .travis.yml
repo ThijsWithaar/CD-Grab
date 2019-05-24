@@ -9,6 +9,7 @@ addons:
       - cmake
       - libflac-dev
       - libopus-dev
+      - libboost-all-dev
       - qtbase5-dev
 
 script:
