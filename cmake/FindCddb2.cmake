@@ -1,0 +1,11 @@
+include (FindPackageHandleStandardArgs)
+
+find_path(CDDB2_INCLUDE_DIR NAMES "cddb/cddb_config.h")
+find_library(CDDB2_LIBRARY NAMES cddb)
+
+add_library(CDDB2::CDDB2 UNKNOWN IMPORTED)
+set_target_properties(CDDB2::CDDB2 PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CDDB2_INCLUDE_DIR}")
+set_target_properties(CDDB2::CDDB2 PROPERTIES IMPORTED_LINK_INTERFACE_LANGUAGES "C" IMPORTED_LOCATION "${CDDB2_LIBRARY}")
+
+mark_as_advanced(CDDB2_INCLUDE_DIR CDDB2_LIBRARY)
+find_package_handle_standard_args (Cddb2 DEFAULT_MSG CDDB2_INCLUDE_DIR CDDB2_LIBRARY)

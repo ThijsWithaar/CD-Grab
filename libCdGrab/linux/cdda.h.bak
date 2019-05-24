@@ -1,0 +1,82 @@
+#pragma once
+
+#include <array>
+#include <string>
+#include <vector>
+
+#include <linux/cdrom.h>
+
+#include <cdgrab/cdda.h>
+
+#include "Device.h"
+#include "linux/mmc.h"
+
+
+class GRAB_EXPORT CDDA :
+	public GenericPacket,
+	private GpcTransport
+{
+public:
+	enum class CommunicationChannel
+	{
+		MMC, SCSI
+	};
+
+	enum class DriveStatus
+	{
+		Error = -1,
+		NoInfo = CDS_NO_INFO,
+		NoDisc = CDS_NO_DISC,
+		TrayOpen = CDS_TRAY_OPEN,
+		NotReady = CDS_DRIVE_NOT_READY,
+		DiscOk = CDS_DISC_OK
+	};
+
+	enum class DiscStatus
+	{
+		NoInfo = CDS_NO_INFO,
+		NoDisc = CDS_NO_DISC,
+		Audio = CDS_AUDIO,
+		Data1 = CDS_DATA_1,
+		Data2 = CDS_DATA_2,
+		XA1 = CDS_XA_2_1,
+		XA2 = CDS_XA_2_2,
+		Mixed = CDS_MIXED
+	};
+
+	CDDA(Device&& device, CommunicationChannel channel = CommunicationChannel::SCSI);
+
+	// Implement GpcTransport
+	void GenericPacketCall(buffer_view<const uint8_t> cmd, buffer_view<uint8_t> data) override;
+
+	DriveStatus GetDriveStatus();
+
+	DiscStatus GetDiscStatus();
+
+	// Relative to last call
+	bool HasMediaChanged();
+
+	Toc GetTOCHL();
+
+	int SizeInSectorsHl();
+
+	/// Returns 98 frames of audio (no subframe)
+	void ReadSector(MSF pos, std::array<char, (int)CddaFrame::Audio>& dst);
+
+	/// Read nrFrames*CD_FRAMESIZE_RAW bytes
+	/// There might be a max. of 25 frames
+	int ReadAudio(int LBA, buffer_view<int16_t> dst, int nrFrames) override;
+
+	std::string UniversalProductCodeHL();
+
+	void Eject();
+
+private:
+	Device m_dev;
+	CommunicationChannel m_channel;
+	MMC m_mmc;
+};
+
+std::ostream& operator<<(std::ostream& os, CDDA::DriveStatus s);
+
+std::ostream& operator<<(std::ostream& os, CDDA::DiscStatus s);

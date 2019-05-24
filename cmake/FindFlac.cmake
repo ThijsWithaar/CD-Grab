@@ -1,0 +1,11 @@
+include (FindPackageHandleStandardArgs)
+
+find_path(FLAC_INCLUDE_DIR NAMES "FLAC/all.h")
+find_library(FLAC_LIBRARY NAMES FLAC)
+
+add_library(FLAC::FLAC UNKNOWN IMPORTED)
+set_target_properties(FLAC::FLAC PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${FLAC_INCLUDE_DIR}")
+set_target_properties(FLAC::FLAC PROPERTIES IMPORTED_LINK_INTERFACE_LANGUAGES "C" IMPORTED_LOCATION "${FLAC_LIBRARY}")
+
+mark_as_advanced(FLAC_INCLUDE_DIR FLAC_LIBRARY)
+find_package_handle_standard_args (Flac DEFAULT_MSG FLAC_INCLUDE_DIR FLAC_LIBRARY)
