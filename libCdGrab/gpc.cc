@@ -843,6 +843,6 @@ std::ostream& operator<<(std::ostream& os, GenericPacket::DiscStatus s)
 	if(lut.count(s))
 		os << lut.at(s);
 	else
-		os << "Unknown";
+		os << "Unknown: " + std::to_string((int)s);
 	return os;
 }

@@ -32,16 +32,19 @@ private slots:
 
 	// User actions, with some bookkeeping
 	void OnGrab();
+	void OnEncode();
 	void OnStatusMessage(QString msg);
 signals:
 	void ChangeDevice(const QString& deviceName);
 	void Grab(const QString& baseName);
+	void Encode(QString sectorDbFname, QString flacFname);
 
 private:
 	void StartCddaThread();
 
+	QString BaseName();
+
 	Ui::MainWindow ui;
-	//Ui::Tags tags;
 
 	DiscInfo m_tags;
 	TrackTableModel m_trackTable;

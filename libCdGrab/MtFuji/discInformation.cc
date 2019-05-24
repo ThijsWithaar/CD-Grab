@@ -1,4 +1,4 @@
-#include "discinformation.h"
+#include "discInformation.h"
 
 
 template<>

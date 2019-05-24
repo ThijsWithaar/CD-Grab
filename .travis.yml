@@ -3,15 +3,28 @@ os: linux
 dist: xenial
 compiler: clang
 
-addons:
-  apt:
-    packages:
-      - cmake
-      - libflac-dev
-      - libopus-dev
-      - libboost-all-dev
-      - qtbase5-dev
+services:
+ - docker
+
+before_install:
+ - docker pull debian:sid
+ - docker run -it -d --name build debian:sid
+
+install:
+ - docker cp "${TRAVIS_BUILD_DIR}" build:/repo
+
+ - docker exec build apt-get update -q
+ - docker exec build apt-get install -y build-essential git cmake clang gnupg
+ - docker exec build apt-get install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev libboost-all-dev
+
+# Depends on gnupg
+#- wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | docker exec build apt-key add -
+ - docker exec build clang -v
+
+ - docker exec build git clone https://github.com/catchorg/Catch2.git /catch2
+ - docker exec build cmake -H/catch2 -B/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
+ - docker exec build cmake --build /catch2.build -- install
 
 script:
-    - cmake .
-    - cmake --build .
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++ -H/repo -B/repo.build
+ - docker exec build cmake --build /repo.build

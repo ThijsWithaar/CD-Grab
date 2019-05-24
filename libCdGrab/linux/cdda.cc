@@ -244,7 +244,7 @@ CDDA::~CDDA()
 }
 
 
-void CDDA::GenericPacketCall(buffer_view<const uint8_t> cmd, buffer_view<uint8_t> data)
+int CDDA::GenericPacketCall(buffer_view<const uint8_t> cmd, buffer_view<uint8_t> data)
 {
 	int ret;
 	if(m->channel == CommunicationChannel::SCSI)
@@ -257,6 +257,7 @@ void CDDA::GenericPacketCall(buffer_view<const uint8_t> cmd, buffer_view<uint8_t
 	}
 	if(ret != 0)
 		throw std::runtime_error("GenericPacketCall error " + std::to_string(ret));
+	return 0;
 }
 
 
@@ -400,34 +401,3 @@ std::ostream& operator<<(std::ostream& os, CDDA::DriveStatus s)
 }
 
 
-std::ostream& operator<<(std::ostream& os, CDDA::DiscStatus s)
-{
-	switch(s)
-	{
-	case CDDA::DiscStatus::NoInfo:
-		os << "No Info";
-		break;
-	case CDDA::DiscStatus::NoDisc:
-		os << "No Disc";
-		break;
-	case CDDA::DiscStatus::Audio:
-		os << "Audio";
-		break;
-	case CDDA::DiscStatus::Data1:
-		os << "Data1";
-		break;
-	case CDDA::DiscStatus::Data2:
-		os << "Data2";
-		break;
-	case CDDA::DiscStatus::XA1:
-		os << "XA1";
-		break;
-	case CDDA::DiscStatus::XA2:
-		os << "XA2";
-		break;
-	case CDDA::DiscStatus::Mixed:
-		os << "Mixed";
-		break;
-	}
-	return os;
-}
