@@ -41,7 +41,7 @@ script:
 
 deploy:
  provider: releases
- tag_name: 0.1
+ tag_name: 0.11
  api_key: ${GithubToken}
  file_glob: true
  file: "${TRAVIS_BUILD_DIR}/build/*.deb"
