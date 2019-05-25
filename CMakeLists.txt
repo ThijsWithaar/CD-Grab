@@ -10,6 +10,8 @@ include(sanitizers)
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 
+enable_testing()
+
 add_subdirectory(libCdGrab)
 add_subdirectory(gui)
 add_subdirectory(test)

@@ -27,7 +27,7 @@ install:
 
 script:
  - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H/repo -B/repo.build
- - docker exec build cmake --build /repo.build -- package
+ - docker exec build cmake --build /repo.build -- test package
  - docker cp build:/repo.build "${TRAVIS_BUILD_DIR}/build"
 
 
@@ -42,7 +42,7 @@ deploy:
  provider: releases
  tag_name: ${TRAVIS_TAG}
  target_commitish: "master"
- name: ${TRAVIS_TAG}
+ name: "${TRAVIS_TAG}: A new hope"
  api_key: ${GithubToken}
  file_glob: true
  file: "${TRAVIS_BUILD_DIR}/build/*.deb"
