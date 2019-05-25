@@ -18,7 +18,7 @@ RUN powershell -NoProfile -InputFormat None -Command \
 ENV VCPKG_DEFAULT_TRIPLET=x64-windows
 
 RUN powershell -NoProfile -InputFormat None -Command \
-	cd C:\tools
+	cd C:\tools; \
 	git clone https://github.com/Microsoft/vcpkg.git; \
 	cd vcpkg; \
 	.\bootstrap-vcpkg.bat; \
