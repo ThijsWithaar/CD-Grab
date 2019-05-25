@@ -13,7 +13,7 @@ Cd-Grab is a copier/archiver for audio-cd's. It checks for errors during reading
 # Why ?
 
 Mostly to scratch an itch. Also [EAC][4] is not available under Linux.
-The audio tooling under Linux requires multiple tools, which are not always friendly for beginners.
+The audio tooling under Linux requires multiple tools, which are not always very user friendly.
 Cd-Grab starts, and read whatever is in the drive to the (lossless) .cue/.flac format.
 This can both be played or [processed further][2].
 
@@ -30,8 +30,7 @@ This can both be played or [processed further][2].
 
 ## Mount Fuji Commands
 
-Cd-Grab uses the SCSI interface, and the underlying Generic Packet Format for most of the non-audio commands. This standard set of commands, the Mt Fuji or [SFF8090i (v5)][7]
-standard is still implemented on all CD-drives.
+Cd-Grab uses the SCSI interface, and the underlying Generic Packet Format for most of the non-audio commands. This standard set of commands, the Mt. Fuji or [SFF8090i (v5)][7] standard is still implemented on all CD-drives.
 
 It provides a more capable interface than the high level CD-Rom APIS provided by [Windows][5] and [Linux][6].
 Mount Fuji commands allow, for example, getting the table-of-contents, UPC and ISRC codes and CD-Text.
@@ -56,4 +55,4 @@ The subject of the message needs to be "cddb genre disc-id" where genre and disc
 [4]: http://www.exactaudiocopy.de/
 [5]: https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/ntddcdrm/ni-ntddcdrm-ioctl_cdrom_raw_read
 [6]: https://github.com/torvalds/linux/blob/master/include/uapi/linux/cdrom.h
-[7]: www.t10.org/ftp/t10/document.00/00-361r0.pdf
+[7]: http://www.t10.org/ftp/t10/document.00/00-361r0.pdf
