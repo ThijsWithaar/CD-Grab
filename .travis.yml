@@ -3,28 +3,49 @@ os: linux
 dist: xenial
 compiler: clang
 
+
 services:
  - docker
 
+
 before_install:
- - docker pull debian:sid
- - docker run -it -d --name build debian:sid
+ # Prepare the docker image
+ #- docker pull debian:sid
+ #- docker build -t debian:sid .
+ - docker pull thijswithaar/sid
+ - docker run -it -d --name build thijswithaar/sid
+
+ # Get the latest and greatest
+ - docker exec build apt update -q
+ - docker exec build apt upgrade -y
+
 
 install:
+ # Copy source code to docker
  - docker cp "${TRAVIS_BUILD_DIR}" build:/repo
 
- - docker exec build apt-get update -q
- - docker exec build apt-get install -y build-essential git cmake clang gnupg
- - docker exec build apt-get install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev libboost-all-dev
-
-# Depends on gnupg
-#- wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | docker exec build apt-key add -
- - docker exec build clang -v
-
- - docker exec build git clone https://github.com/catchorg/Catch2.git /catch2
- - docker exec build cmake -H/catch2 -B/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
- - docker exec build cmake --build /catch2.build -- install
 
 script:
- - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++ -H/repo -B/repo.build
- - docker exec build cmake --build /repo.build
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H/repo -B/repo.build
+ - docker exec build cmake --build /repo.build -- package test
+ - docker cp build:/repo.build "${TRAVIS_BUILD_DIR}/build"
+
+
+before_deploy:
+ - git config --local user.name "${GIT_USER}"
+ - git config --local user.email "${GIT_EMAIL}"
+ - export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
+ - git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
+
+
+deploy:
+ provider: releases
+ tag_name: ${TRAVIS_TAG}
+ target_commitish: "master"
+ name: "${TRAVIS_TAG}: A new hope"
+ api_key: ${GithubToken}
+ file_glob: true
+ file: "${TRAVIS_BUILD_DIR}/build/*.deb"
+ overwrite: true
+ skip_cleanup: true
+ draft: false
