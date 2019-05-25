@@ -27,7 +27,7 @@ set(CPACK_PACKAGE_NAME "CdGrab")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Audio-CD grabber, with error detection")
 set(CPACK_PACKAGE_CONTACT "thijs.withaar@gmail.com")
 if(UNIX)
-	set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsoxr qt5 libboost")
+	set(CPACK_DEBIAN_PACKAGE_DEPENDS "libopus libflac libsoxr qt5 libboost-filesystem (>=1.67.0)")
 	set(CPACK_GENERATOR "DEB")
 endif()
 
