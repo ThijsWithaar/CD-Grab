@@ -1,5 +1,7 @@
 language: cpp
-os: linux
+os:
+    - linux
+    # - windows
 dist: xenial
 compiler: clang
 
@@ -12,23 +14,24 @@ before_install:
  # Prepare the docker image
  #- docker pull debian:sid
  #- docker build -t debian:sid .
- - docker pull thijswithaar/sid
- - docker run -it -d --name build thijswithaar/sid
-
- # Get the latest and greatest
- - docker exec build apt update -q
- - docker exec build apt upgrade -y
-
+ - if [ "$TRAVIS_OS_NAME" = "linux" ];
+        docker pull thijswithaar/sid;
+        docker run -it -d --name build thijswithaar/sid;
+        docker exec build apt update -q;
+        docker exec build apt upgrade -y;
+   fi
 
 install:
  # Copy source code to docker
- - docker cp "${TRAVIS_BUILD_DIR}" build:/repo
+ - if [ "$TRAVIS_OS_NAME" = "linux" ];
+        docker cp ${TRAVIS_BUILD_DIR} build:${TRAVIS_BUILD_DIR};
+   fi
 
 
 script:
- - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H/repo -B/repo.build
- - docker exec build cmake --build /repo.build -- package test
- - docker cp build:/repo.build "${TRAVIS_BUILD_DIR}/build"
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
+ - docker exec build cmake --build ${TRAVIS_BUILD_DIR}/build -- package test
+ - docker cp build:${TRAVIS_BUILD_DIR}/build ${TRAVIS_BUILD_DIR}/build
 
 
 before_deploy:
