@@ -27,7 +27,7 @@ install:
 
 script:
  - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H/repo -B/repo.build
- - docker exec build cmake --build /repo.build -- test package
+ - docker exec build cmake --build /repo.build -- package test
  - docker cp build:/repo.build "${TRAVIS_BUILD_DIR}/build"
 
 
