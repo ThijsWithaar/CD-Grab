@@ -26,26 +26,26 @@ install:
 
 
 script:
- - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -H/repo -B/repo.build
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H/repo -B/repo.build
  - docker exec build cmake --build /repo.build -- package
  - docker cp build:/repo.build "${TRAVIS_BUILD_DIR}/build"
 
 
-#before_deploy:
-# - git config --local user.name "${GIT_USER}"
-# - git config --local user.email "${GIT_EMAIL}"
-## - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-# - export $TRAVIS_TAG="0.1"
-# - git tag $TRAVIS_TAG
+before_deploy:
+ - git config --local user.name "${GIT_USER}"
+ - git config --local user.email "${GIT_EMAIL}"
+ - export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
+ - git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
 
 
 deploy:
  provider: releases
- tag_name: 0.11
+ tag_name: ${TRAVIS_TAG}
+ target_commitish: "master"
+ name: ${TRAVIS_TAG}
  api_key: ${GithubToken}
  file_glob: true
  file: "${TRAVIS_BUILD_DIR}/build/*.deb"
  overwrite: true
  skip_cleanup: true
  draft: false
- #on.tags: true
