@@ -218,7 +218,7 @@ GenericPacket::HardwareInfo GenericPacket::GetHardwareInfo()
 	CDB cdb;
 	cdb.SetCommand(GenericPacketCommand::Inquiry);
 	cdb.data()[4] = static_cast<uint8_t>(buf.size());
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	auto pVendor = buf.data() + 8;
 	auto pModel = pVendor + VendorLength;
@@ -262,7 +262,7 @@ Capabilities GenericPacket::GetCapabilities()
 	SetBits<0, 6>(cdb.data()[2], (int)ModePageCodes::CdDvdCapabilities);
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	const char* pHeader = &buf[0];
 	const char* pModePage = pHeader + 8;		 // Table 218
@@ -344,14 +344,14 @@ GenericPacket::PerfomanceInfo GenericPacket::GetPerformance()
 	cdb.data()[9] = maxNrDescriptors;
 
 	// Read speed
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	auto rp = parse<PerformanceDescriptor>(&buf[8]);
 	ret.read_kBs = rp.endPerformance;
 
 	// Write speed
 	cdb.data()[1] |= (int)PerformanceDataType::WriteSpeed;
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 	auto wp = parse<PerformanceDescriptor>(&buf[8]);
 	ret.write_kBs = wp.endPerformance;
 #if 0
@@ -398,7 +398,7 @@ void GenericPacket::GetConfiguration()
 	SetBits<0, 2>(cdb.data()[1], rt);
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	FeatureHeader hdr = parse<FeatureHeader>(buf.data());
 
@@ -414,7 +414,7 @@ GenericPacket::DiscStatus GenericPacket::GetDiscStatus()
 	cdb.SetCommand(GenericPacketCommand::DiscInformation);
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	::DiscInformation di = parse<::DiscInformation>(buf.data());
 
@@ -471,7 +471,7 @@ GenericPacket::PerfomanceInfo GenericPacket::GetMinimumWriteSpeed()
 	cdb.data()[10] = (int)PerformanceType::WriteSpeed;
 	cdb.data()[9] = maxNrDescriptors;
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	auto& desc = buf[8];
 	auto wp = parse<WriteSpeedDescriptor>(&desc);
@@ -514,7 +514,7 @@ Toc GenericPacket::GetToc(bool isrc, bool cdtext)
 	cdb.SetCommand(GenericPacketCommand::ReadToc);
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 	cdb.data()[2] = (int)ReadToc::Toc;
-	m_io->GenericPacketCall(cdb.view(), {buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {buf.data(), (ptrdiff_t)buf.size()});
 
 	int trk0 = buf[2];
 	int trk1 = buf[3];
@@ -526,7 +526,7 @@ Toc GenericPacket::GetToc(bool isrc, bool cdtext)
 	{
 		cdb.data()[1] = 0x02; // MSF
 		cdb.data()[6] = (trk > trk1) ? int(TrackId::LeadOut) : trk;
-		m_io->GenericPacketCall(cdb.view(), {buf.data(), buf.size()});
+		m_io->GenericPacketCall(cdb.view(), {buf.data(), (ptrdiff_t)buf.size()});
 
 		toc.tracks.push_back(parse<TocEntry>(&buf[4]));
 		if(isrc)
@@ -606,7 +606,7 @@ std::pair<int, std::string> GenericPacket::UniversalProductCode()
 	cdb.data()[2] = 1 << 6; // Request SubQ data
 	cdb.data()[3] = (uint8_t)SubchannelTrack::MediaCatalogNumber;
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	const char* mcnData = &buf[4];
 	const char* mcn = &buf[8];
@@ -634,7 +634,7 @@ std::array<char, 12> GenericPacket::GetISRC(int track)
 	cdb.data()[3] = (uint8_t)SubchannelTrack::ISRC;
 	cdb.data()[6] = track;
 
-	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {(uint8_t*)buf.data(), (ptrdiff_t)buf.size()});
 
 	// 4 bytes of header, then 4 bytes of track ISRC data block, then the ISRC block:
 	const char* isrcData = &buf[8];
@@ -661,7 +661,7 @@ int GenericPacket::SizeInSectors()
 	cdb.SetStartTrack((int)TrackId::LeadOut);
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 
-	m_io->GenericPacketCall(cdb.view(), {buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {buf.data(), (ptrdiff_t)buf.size()});
 
 	int lsn = parse<uint32_t>(&buf[8]);
 	return lsn;
@@ -677,7 +677,7 @@ void GenericPacket::GetStatus(std::set<EventNotificationClass> mask, bool blocki
 	cdb.SetReadLength16(static_cast<uint16_t>(buf.size()));
 	cdb.data()[1] = blocking ? 0 : 1;
 
-	m_io->GenericPacketCall(cdb.view(), {buf.data(), buf.size()});
+	m_io->GenericPacketCall(cdb.view(), {buf.data(), (ptrdiff_t)buf.size()});
 	auto dataLen = parse<uint16_t>(&buf[0]);
 	bool noEventAvailable = GetBit<2>(buf[2]);
 	int notificationClass = buf[2] & 0x7;

@@ -1,5 +1,5 @@
 image:
- - Visual Studio 2019 Preview
+ - Visual Studio 2017
 
 configuration:
  - release      # lower-case might be needed for VCPKG_BUILD_TYPE
@@ -16,15 +16,15 @@ environment:
     QT_DIR: C:\Qt\latest\msvc2017_64
 
 init:
- - echo %arch%
  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
  - echo %VCPKG_DIR%
  - echo %VCPKG_DEFAULT_TRIPLET%
  - echo %CMAKE_GENERATOR%
- - dir C:\Qt
+ - echo %QT_DIR%
+ #- dir C:\Qt
  - dir "C:\Program Files (x86)\Microsoft Visual Studio"
- - dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
- - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+ - dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+ - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
  - echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
  - type %VCPKG_DIR%\triplets\x64-windows.cmake
  - set Path=%QT_DIR%\bin;%Path%
@@ -45,9 +45,8 @@ install:
  - vcpkg integrate install
 
 before_build:
- # -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
- - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
- - dir %APPVEYOR_BUILD_FOLDER%/build
+ - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
+ - dir %APPVEYOR_BUILD_FOLDER%\build
 
 #build_script:
 # - cmake --build %BUILD_DIR%

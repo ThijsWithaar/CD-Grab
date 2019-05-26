@@ -91,7 +91,7 @@ void CdTextPacketCollector::Add(int track, int pos, std::array<char, 12>& text)
 		std::string_view svp{pSvp, (size_t)std::max<ptrdiff_t>(pSvc - pSvp -1, 0)};
 		std::string_view svc{pSvc, posc};
 
-		std::cout << boost::format("\tPrevious(%2i) '%s', current(%2i) '%s'\n") % prevTrack % svp % track % svc;
+		//std::cout << boost::format("\tPrevious(%2i) '%s', current(%2i) '%s'\n") % prevTrack % svp % track % svc;
 
 		perTrack[prevTrack] += svp;
 		perTrack[track] += svc;
