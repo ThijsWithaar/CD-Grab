@@ -1,5 +1,5 @@
 image:
- - Visual Studio 2017
+ - Visual Studio 2019 Preview
 
 configuration:
  - Release
@@ -7,31 +7,46 @@ configuration:
 platform:
  - x64
 
-arch:
- - Win64
+clone_folder: c:\projects\cd_grab
 
-clone_folder:
- - c:\projects\cmake-init
+environment:
+    VCPKG_DIR: C:\Tools\vcpkg
+    VCPKG_DEFAULT_TRIPLET: "x64-windows"
+    CMAKE_GENERATOR: "Visual Studio 16 2019 x64"
 
 init:
  - echo %arch%
  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
- - set generator="Visual Studio 15 2017 x64"
- - set VCPKG_DEFAULT_TRIPLET=x64-windows
- - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+ - echo %CMAKE_GENERATOR%
+ - dir "C:\Program Files (x86)\Microsoft Visual Studio"
+ - dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+ - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+ - echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
 
 install:
  - cd c:\tools\vcpkg
+ - dir
  - git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
- - vcpkg install qt5 libflac opus
- - vcpkg installboost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
+ - git fetch twithaar
+ - git checkout twithaar/soxr
+ - vcpkg update
+ - vcpkg install catch2 libflac opus soxr
+ - vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
+ - vcpkg install qt5
+ # Remove intermediates, otherwise it won't fit in the cache? (but we only cache installed...)
+ #- rmdir /S /Q c:\tools\vcpkg\buildtrees
+ - vcpkg integrate install
 
 before_build:
- - cmake -G %generator% -DCMAKE_BUILD_TYPE=RELEASE -Hc:/projects/cmake-init -Bc:/projects/cmake-init/build
- - dir c:\projects\cmake-init\build
+ # -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+ - cmake -G %CMAKE_GENERATOR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
+ - dir %APPVEYOR_BUILD_FOLDER%/build
 
 build:
-  project: c:\projects\cmake-init\build\template.sln
+#  project: c:\projects\cd_grab\build\template.sln
+# - cmake --build %BUILD_DIR%
+# - dir %BUILD_DIR%
+  project: c:\projects\cd_grab\build\ALL_BUILD.vcxproj
 
 cache:
  - c:\tools\vcpkg\installed\

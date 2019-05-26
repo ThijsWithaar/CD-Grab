@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.com/ThijsWithaar/CD-Grab.svg?token=qVpJoyee77Q7ST7dzg8M&branch=master)](https://travis-ci.com/ThijsWithaar/CD-Grab)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](LICENSE)
+[![Travies build status](https://travis-ci.com/ThijsWithaar/CD-Grab.svg?token=qVpJoyee77Q7ST7dzg8M&branch=master)](https://travis-ci.com/ThijsWithaar/CD-Grab)
+[![Appveyor build status](https://ci.appveyor.com/project/ThijsWithaar/cd-grab/branch/master?svg=true)](https://ci.appveyor.com/project/ThijsWithaar/cd-grab)
 [![Github all releases](https://img.shields.io/github/downloads/ThijsWithaar/CD-Grab/total.svg)](https://GitHub.com/ThijsWithaar/CD-Grab/releases/)
+
 
 
 # Introduction
