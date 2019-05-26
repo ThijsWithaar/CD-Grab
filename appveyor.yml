@@ -56,7 +56,7 @@ build:
   project: c:\projects\cd_grab\build\PACKAGE.vcxproj
 
 artifacts:
-- path: c:\projects\cd_grab\build\*.exe
+- path: build\*.exe
 
 deploy:
   release: CD-grab-$(appveyor_build_version)
