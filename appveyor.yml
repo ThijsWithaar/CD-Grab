@@ -47,26 +47,30 @@ before_build:
  - dir %APPVEYOR_BUILD_FOLDER%\build
 
 build_script:
- - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- package test
+ - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- package
 
-#build:
-#  project: c:\projects\cd_grab\build\PACKAGE.vcxproj
+test_script:
+ - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- test
 
 artifacts:
  - path: build\*.exe
    name: windows_installer
 
+#skip_tags: true
+
 deploy:
-  release: 0.1.62 #-$(appveyor_build_version)
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  release: $(APPVEYOR_REPO_TAG_NAME)
   description: Attack of the Clones
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  #artifact: windows_installer
+  artifact: windows_installer
   draft: false
-  #force_update: true
+  force_update: true
   on:
     branch: master
+    APPVEYOR_REPO_TAG: true
 
 cache:
  - c:\tools\vcpkg\installed\
