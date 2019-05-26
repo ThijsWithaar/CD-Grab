@@ -1,5 +1,5 @@
 image:
- - Visual Studio 2019 Preview
+ - Visual Studio 2017
 
 configuration:
  - release      # lower-case might be needed for VCPKG_BUILD_TYPE
@@ -12,64 +12,65 @@ clone_folder: c:\projects\cd_grab
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
     VCPKG_DEFAULT_TRIPLET: x64-windows
-    CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    #CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    CMAKE_GENERATOR: Ninja
     QT_DIR: C:\Qt\latest\msvc2017_64
 
 init:
- - echo %arch%
  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
  - echo %VCPKG_DIR%
  - echo %VCPKG_DEFAULT_TRIPLET%
  - echo %CMAKE_GENERATOR%
- - dir C:\Qt
- - dir "C:\Program Files (x86)\Microsoft Visual Studio"
- - dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
- - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+ #- echo %QT_DIR%
+ #- dir C:\Qt
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+ - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
  - echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
  - type %VCPKG_DIR%\triplets\x64-windows.cmake
  - set Path=%QT_DIR%\bin;%Path%
 
 install:
  - cd c:\tools\vcpkg
- #- dir
  - git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
  - git fetch twithaar
  - git checkout twithaar/soxr -b soxr
  - vcpkg update
- - vcpkg build opus
+ #- vcpkg build opus
  - vcpkg install catch2 libflac opus soxr
  - vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
  #- vcpkg install qt5 # This one takes too long, use a pre-compiled version
- # Remove intermediates, otherwise it won't fit in the cache? (but we only cache installed...)
- #- rmdir /S /Q c:\tools\vcpkg\buildtrees
  - vcpkg integrate install
 
 before_build:
- # -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
- - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
- - dir %APPVEYOR_BUILD_FOLDER%/build
+ - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
+ - dir %APPVEYOR_BUILD_FOLDER%\build
 
-#build_script:
-# - cmake --build %BUILD_DIR%
-# - dir %BUILD_DIR%
+build_script:
+ - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- package
 
-build:
-  project: c:\projects\cd_grab\build\PACKAGE.vcxproj
+test_script:
+ - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- test
 
 artifacts:
-- path: c:\projects\cd_grab\build\*.exe
+ - path: build\*.exe
+   name: windows_installer
+
+#skip_tags: true
 
 deploy:
-  release: CD-grab-$(appveyor_build_version)
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  release: $(APPVEYOR_REPO_TAG_NAME)
   description: Attack of the Clones
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  artifact: c:\projects\cd_grab\build\*.exe
+  artifact: windows_installer
   draft: false
   force_update: true
   on:
     branch: master
+    APPVEYOR_REPO_TAG: true
 
 cache:
  - c:\tools\vcpkg\installed\

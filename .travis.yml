@@ -14,18 +14,23 @@ before_install:
  # Prepare the docker image
  #- docker pull debian:sid
  #- docker build -t debian:sid .
- - if [ "$TRAVIS_OS_NAME" = "linux" ];
-        docker pull thijswithaar/sid;
-        docker run -it -d --name build thijswithaar/sid;
-        docker exec build apt update -q;
-        docker exec build apt upgrade -y;
-   fi
+ #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
+ - docker pull thijswithaar/sid
+ - docker run -it -d --name build thijswithaar/sid
+ - docker exec build apt update -q
+ - docker exec build apt upgrade -y
+ #  fi
 
 install:
  # Copy source code to docker
- - if [ "$TRAVIS_OS_NAME" = "linux" ];
-        docker cp ${TRAVIS_BUILD_DIR} build:${TRAVIS_BUILD_DIR};
-   fi
+ #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
+ #- echo "${TRAVIS_BUILD_DIR}"
+ #- ls ${TRAVIS_BUILD_DIR}
+ - docker exec build mkdir -p ${TRAVIS_BUILD_DIR}
+ - docker cp ${TRAVIS_BUILD_DIR}/. build:${TRAVIS_BUILD_DIR}
+ - docker exec build ls ${TRAVIS_BUILD_DIR}
+
+ #fi
 
 
 script:
@@ -37,18 +42,20 @@ script:
 before_deploy:
  - git config --local user.name "${GIT_USER}"
  - git config --local user.email "${GIT_EMAIL}"
- - export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
- - git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
+ #- export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
+ #- git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
 
 
 deploy:
  provider: releases
  tag_name: ${TRAVIS_TAG}
  target_commitish: "master"
- name: "${TRAVIS_TAG}: A New Hope"
+ name: "A New Hope"
  api_key: ${GithubToken}
  file_glob: true
  file: "${TRAVIS_BUILD_DIR}/build/*.deb"
  overwrite: true
  skip_cleanup: true
  draft: false
+ on:
+  tags: true
