@@ -1,0 +1,37 @@
+image:
+ - Visual Studio 2017
+
+configuration:
+ - Release
+
+platform:
+ - x64
+
+arch:
+ - Win64
+
+clone_folder:
+ - c:\projects\cmake-init
+
+init:
+ - echo %arch%
+ - echo %APPVEYOR_BUILD_WORKER_IMAGE%
+ - set generator="Visual Studio 15 2017 x64"
+ - set VCPKG_DEFAULT_TRIPLET=x64-windows
+ - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+install:
+ - cd c:\tools\vcpkg
+ - git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
+ - vcpkg install qt5 libflac opus
+ - vcpkg installboost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
+
+before_build:
+ - cmake -G %generator% -DCMAKE_BUILD_TYPE=RELEASE -Hc:/projects/cmake-init -Bc:/projects/cmake-init/build
+ - dir c:\projects\cmake-init\build
+
+build:
+  project: c:\projects\cmake-init\build\template.sln
+
+cache:
+ - c:\tools\vcpkg\installed\

@@ -24,3 +24,7 @@ RUN update-alternatives --config clang++
 RUN git clone https://github.com/catchorg/Catch2.git /catch2
 RUN cmake -H/catch2 -B/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
 RUN cmake --build /catch2.build -- install
+
+# TODO: Bring in the visual studio tools in wine.
+# Then use
+# https://github.com/paleozogt/MSVCDocker/blob/master/Dockerfile

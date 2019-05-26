@@ -45,7 +45,7 @@ deploy:
  provider: releases
  tag_name: ${TRAVIS_TAG}
  target_commitish: "master"
- name: "${TRAVIS_TAG}: A new hope"
+ name: "${TRAVIS_TAG}: A New Hope"
  api_key: ${GithubToken}
  file_glob: true
  file: "${TRAVIS_BUILD_DIR}/build/*.deb"
