@@ -20,10 +20,10 @@ init:
  - echo %VCPKG_DIR%
  - echo %VCPKG_DEFAULT_TRIPLET%
  - echo %CMAKE_GENERATOR%
- - echo %QT_DIR%
+ #- echo %QT_DIR%
  #- dir C:\Qt
- - dir "C:\Program Files (x86)\Microsoft Visual Studio"
- - dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
  - echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
  - type %VCPKG_DIR%\triplets\x64-windows.cmake
@@ -36,7 +36,7 @@ install:
  - git fetch twithaar
  - git checkout twithaar/soxr -b soxr
  - vcpkg update
- - vcpkg build opus
+ #- vcpkg build opus
  - vcpkg install catch2 libflac opus soxr
  - vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
  #- vcpkg install qt5 # This one takes too long, use a pre-compiled version
@@ -49,14 +49,15 @@ before_build:
  - dir %APPVEYOR_BUILD_FOLDER%\build
 
 #build_script:
-# - cmake --build %BUILD_DIR%
+# - cmake --build %BUILD_DIR% -- package test
 # - dir %BUILD_DIR%
 
 build:
   project: c:\projects\cd_grab\build\PACKAGE.vcxproj
 
 artifacts:
-- path: build\*.exe
+ - path: build\*.exe
+   name: windows_installer
 
 deploy:
   release: CD-grab-$(appveyor_build_version)
@@ -64,7 +65,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  artifact: c:\projects\cd_grab\build\*.exe
+  artifact: windows_installer
   draft: false
   force_update: true
   on:
