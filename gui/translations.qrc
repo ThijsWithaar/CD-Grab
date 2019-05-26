@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/translations" lang="nl">
+        <file alias="dutch.qm">dutch.qm</file>
+    </qresource>
+</RCC>

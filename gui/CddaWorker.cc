@@ -91,7 +91,7 @@ void CddaWorker::Poll()
 
 void CddaWorker::ChangeDevice(const QString dev)
 {
-	emit StatusMessage("Changing device to " + dev);
+	emit StatusMessage(tr("Changing device to ") + dev);
 
 	m_cdda = std::make_unique<CDDA>(dev.toStdString());
 
@@ -141,7 +141,7 @@ void CddaWorker::Grab(QString basename)
 	TryLocker lock(m_NonReentrantMutex);
 	if(!lock)
 	{
-		emit StatusMessage("Device busy");
+		emit StatusMessage(tr("Device busy"));
 		return;
 	}
 
@@ -154,7 +154,7 @@ void CddaWorker::Grab(QString basename)
 	std::string basenames = basename.toStdString();
 	std::string sectorFname = basenames + ".sdb";
 
-	emit StatusMessage("Grabbing to: " + QString::fromStdString(sectorFname));
+	emit StatusMessage(tr("Grabbing to: ") + QString::fromStdString(sectorFname));
 
 	SectorDb::Statistics stat;
 	if(boost::filesystem::is_regular_file(sectorFname))
@@ -181,9 +181,9 @@ void CddaWorker::Grab(QString basename)
 			m_sdb.Save(sectorFname);
 	}
 	if(m_cancelled)
-		emit StatusMessage("Grabbing cancelled");
+		emit StatusMessage(tr("Grabbing cancelled"));
 	else
-		emit StatusMessage("Grabbing complete");
+		emit StatusMessage(tr("Grabbing complete"));
 }
 
 
@@ -192,7 +192,7 @@ void CddaWorker::Encode(QString sectorDbFname, QString flacFname)
 	TryLocker lock(m_NonReentrantMutex);
 	if(!lock)
 	{
-		emit StatusMessage("Sector Database busy");
+		emit StatusMessage(tr("Sector Database busy"));
 		return;
 	}
 
@@ -202,10 +202,10 @@ void CddaWorker::Encode(QString sectorDbFname, QString flacFname)
 	{
 		if(!boost::filesystem::is_regular_file(sectorDbFname.toStdString()))
 		{
-			emit StatusMessage("Could not load db for encoding: " + sectorDbFname);
+			emit StatusMessage(tr("Could not load db for encoding: ") + sectorDbFname);
 			return;
 		}
-		emit StatusMessage("Loading " + sectorDbFname);
+		emit StatusMessage(tr("Loading ") + sectorDbFname);
 		m_sdb = SectorDb(sectorDbFname.toStdString());
 	}
 
@@ -245,10 +245,10 @@ void CddaWorker::Encode(QString sectorDbFname, QString flacFname)
 	{
 		process(lba, lbasize-lba);	// run-out
 		emit Progress(100.);
-		emit StatusMessage("Encoding complete");
+		emit StatusMessage(tr("Encoding complete"));
 	}
 	else
-		emit StatusMessage("Encoding cancelled");
+		emit StatusMessage(tr("Encoding cancelled"));
 }
 
 
@@ -257,7 +257,7 @@ void CddaWorker::Eject()
 	if(m_cdda == nullptr)
 		return;
 
-	emit StatusMessage("Ejecting disc");
+	emit StatusMessage(tr("Ejecting disc"));
 	m_cdda->Eject();
 }
 

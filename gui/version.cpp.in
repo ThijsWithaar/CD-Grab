@@ -1,0 +1,9 @@
+#include "@CMAKE_CURRENT_SOURCE_DIR@/version.h"
+
+const char* gitVersion = "@GIT_VERSION@";
+
+const char* gitBranch = "@GIT_BRANCH@";
+
+const char* gitCommit = "@GIT_COMMIT_HASH@";
+
+const char* buildDate = "@BUILD_DATE@";

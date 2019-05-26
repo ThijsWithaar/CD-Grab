@@ -9,7 +9,14 @@ std::string asString(std::array<char, 12> ar)
 }
 
 
-TrackTableModel::TrackTableModel(QObject* parent): QAbstractTableModel(parent)
+
+TrackTableModel::TrackTableModel(QObject* parent):
+	QAbstractTableModel(parent),
+	m_headers{
+		tr("Artist"),
+		tr("Title"),
+		tr("ISRC")
+	}
 {
 }
 
@@ -34,24 +41,23 @@ void TrackTableModel::SetTracks(const std::vector<TrackInfo>& tracks)
 }
 
 
-QVariant TrackTableModel::headerData(int section, Qt::Orientation orientation, int role)
+QVariant TrackTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if(role != Qt::DisplayRole || orientation != Qt::Horizontal)
 		return {};
-
-	return QString("Header");
+	return m_headers[section];
 }
 
 
 int TrackTableModel::rowCount(const QModelIndex&) const
 {
-	return (int)m_tracks.size();
+	return static_cast<int>(m_tracks.size());
 }
 
 
 int TrackTableModel::columnCount(const QModelIndex&) const
 {
-	return 3;
+	return m_headers.size();
 }
 
 
@@ -76,7 +82,7 @@ QVariant TrackTableModel::data(const QModelIndex& idx, int role) const
 		break;
 	}
 	default:
-		r = QString("empty");
+		assert(!"Invalid column");
 	}
 	return r;
 }

@@ -6,8 +6,8 @@
 
 #include <cdgrab/cdda.h>
 
-#include "ui_tags.h"
 #include "TrackTableModel.h"
+#include "About.h"
 
 
 static std::string Join(std::string sep, std::vector<std::string> list)
@@ -34,25 +34,42 @@ static std::vector<std::string> NonEmpty(std::vector<std::string> in)
 
 
 
-
 MainWindow::MainWindow(QWidget* parent):
 	QMainWindow(parent),
 	m_trackTable(this)
 {
+    qApp->installTranslator(&m_translator);
+
 	ui.setupUi(this);
-	//tags.setupUi(ui.wTags);
 
 	ui.cDevice->clear();
 	for(auto& dev: GetDevices())
 		ui.cDevice->addItem(QString::fromStdString(dev));
 
 	connect(ui.actionQuit, &QAction::triggered, QApplication::instance(), &QApplication::quit);
+	connect(ui.actionAbout, &QAction::triggered, this, [this](){About about(this); about.exec();});
+	connect(ui.actionEnglish, &QAction::triggered, this, [this](){ SetLanguage(English); });
+	connect(ui.actionDutch, &QAction::triggered, this, [this](){ SetLanguage(Nederlands); });
+
 	connect(ui.pbGrab, &QPushButton::clicked, this, &MainWindow::OnGrab);
 	connect(ui.pbEncode, &QPushButton::clicked, this, &MainWindow::OnEncode);
 
 	ui.tvTracks->setModel(&m_trackTable);
 
 	StartCddaThread();
+}
+
+
+void MainWindow::SetLanguage(Languages lan)
+{
+	QString qmFile;
+	switch(lan)
+	{
+		default:
+			qmFile = ":/translations/dutch.qm";
+	}
+
+	m_translator.load(qmFile);
 }
 
 

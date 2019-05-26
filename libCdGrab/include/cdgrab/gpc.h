@@ -171,6 +171,7 @@ public:
 
 	enum class DiscStatus
 	{
+		Error = -1,
 		NoInfo = 0,
 		NoDisc = 1,
 		Audio = 100,

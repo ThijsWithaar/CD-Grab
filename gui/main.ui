@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>CD Grab</string>
   </property>
+  <property name="windowIcon">
+   <iconset theme="drive-optical"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -30,6 +33,9 @@
              <layout class="QHBoxLayout" name="horizontalLayout">
               <item>
                <layout class="QFormLayout" name="formLayout">
+                <property name="labelAlignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
                 <item row="2" column="0">
                  <widget class="QLabel" name="laDevice">
                   <property name="text">
@@ -103,6 +109,9 @@
                 <property name="text">
                  <string>Eject</string>
                 </property>
+                <property name="icon">
+                 <iconset theme="media-eject"/>
+                </property>
                </widget>
               </item>
               <item row="1" column="1">
@@ -123,6 +132,9 @@
                <widget class="QPushButton" name="pbAbort">
                 <property name="text">
                  <string>Abort</string>
+                </property>
+                <property name="icon">
+                 <iconset theme="process-stop"/>
                 </property>
                </widget>
               </item>
@@ -154,6 +166,9 @@
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <layout class="QFormLayout" name="flAlbum">
+                <property name="labelAlignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
                 <property name="bottomMargin">
                  <number>34</number>
                 </property>
@@ -229,15 +244,60 @@
     </property>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>He&amp;lp</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>La&amp;nguage</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionEnglish"/>
+    <addaction name="actionDutch"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuLanguage"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset theme="help-about">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="icon">
+    <iconset theme="flag-uk"/>
+   </property>
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionDutch">
+   <property name="icon">
+    <iconset theme="flag-nl"/>
+   </property>
+   <property name="text">
+    <string>Dutch</string>
    </property>
   </action>
  </widget>

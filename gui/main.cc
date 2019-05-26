@@ -15,6 +15,7 @@
 #include <cdgrab/file/sectorDb.h>
 
 #include "MainWindow.h"
+#include "QExceptionApplication.h"
 #include "grabber.h"
 
 
@@ -81,10 +82,16 @@ try
 
 	grabber.Encode();
 #elif 1
-	QApplication app(argc, argv);
+	QExceptionApplication app(argc, argv, "CD-Grab");
 	MainWindow main(nullptr);
 	main.show();
 	return app.exec();
+#elif 1
+	auto devs = GetDevices();
+	if(devs.empty())
+		return -2;
+	CDDA cdda(devs[0], CDDA::CommunicationChannel::SCSI);
+	cdda.UnitReady();
 #else
 	auto devs = GetDevices();
 	if(devs.empty())
