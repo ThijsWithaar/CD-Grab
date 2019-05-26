@@ -12,7 +12,8 @@ clone_folder: c:\projects\cd_grab
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
     VCPKG_DEFAULT_TRIPLET: x64-windows
-    CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    #CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    CMAKE_GENERATOR: Ninja
     QT_DIR: C:\Qt\latest\msvc2017_64
 
 init:
@@ -31,7 +32,6 @@ init:
 
 install:
  - cd c:\tools\vcpkg
- #- dir
  - git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
  - git fetch twithaar
  - git checkout twithaar/soxr -b soxr
@@ -40,34 +40,31 @@ install:
  - vcpkg install catch2 libflac opus soxr
  - vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
  #- vcpkg install qt5 # This one takes too long, use a pre-compiled version
- # Remove intermediates, otherwise it won't fit in the cache? (but we only cache installed...)
- #- rmdir /S /Q c:\tools\vcpkg\buildtrees
  - vcpkg integrate install
 
 before_build:
  - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
  - dir %APPVEYOR_BUILD_FOLDER%\build
 
-#build_script:
-# - cmake --build %BUILD_DIR% -- package test
-# - dir %BUILD_DIR%
+build_script:
+ - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- package test
 
-build:
-  project: c:\projects\cd_grab\build\PACKAGE.vcxproj
+#build:
+#  project: c:\projects\cd_grab\build\PACKAGE.vcxproj
 
 artifacts:
  - path: build\*.exe
    name: windows_installer
 
 deploy:
-  release: CD-grab-$(appveyor_build_version)
+  release: 0.1.62 #-$(appveyor_build_version)
   description: Attack of the Clones
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  artifact: windows_installer
+  #artifact: windows_installer
   draft: false
-  force_update: true
+  #force_update: true
   on:
     branch: master
 
