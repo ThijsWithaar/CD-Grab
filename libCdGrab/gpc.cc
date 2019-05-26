@@ -837,6 +837,7 @@ std::ostream& operator<<(std::ostream& os, GenericPacket::DiscStatus s)
 {
 	using DS = GenericPacket::DiscStatus;
 	const std::map<DS, std::string> lut = {
+		{DS::Error, "Error"},
 		{DS::NoInfo, "No Info"}, {DS::NoDisc, "No Disc"}, {DS::Audio, "Audio"},
 		{DS::Data1, "Data"}, {DS::Data2, "Data"}, {DS::XA1, "XA"}
 	};

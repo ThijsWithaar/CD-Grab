@@ -2,20 +2,29 @@
 project(cdGrabUi LANGUAGES CXX DESCRIPTION "Gui for grabbing of audio CD's" VERSION 0.1)
 
 vcpkg_add_package(qt5)
-debian_add_package(qtbase5-dev)
-
-find_package(Qt5 REQUIRED Core Gui Widgets)
+debian_add_package(qtbase5-dev qttools5-dev)
+find_package(Qt5 REQUIRED Core Gui Widgets LinguistTools)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON) # For linguist translations
 
+include(GitVersion)
+configure_file(version.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
 
 file(GLOB SRC CONFIGURE_DEPENDS *.cc *.h)
 file(GLOB QTUI CONFIGURE_DEPENDS *.ui)
 
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} dutch.ts)
+configure_file(translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
+
 add_executable(${PROJECT_NAME} WIN32
 	${SRC}
 	${QTUI}
+	${QM_FILES}
+	${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+	${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)

@@ -3,12 +3,12 @@
 #include "QMainWindow"
 
 #include "ui_main.h"
-#include "ui_tags.h"
 
 #include <memory>
 #include <optional>
 
 #include <QThread>
+#include <QTranslator>
 
 #include "TrackTableModel.h"
 #include "CddaWorker.h"
@@ -40,11 +40,19 @@ signals:
 	void Encode(QString sectorDbFname, QString flacFname);
 
 private:
+	enum Languages {
+		English,
+		Nederlands
+	};
+
+	void SetLanguage(Languages);
+
 	void StartCddaThread();
 
 	QString BaseName();
 
 	Ui::MainWindow ui;
+	QTranslator m_translator;
 
 	DiscInfo m_tags;
 	TrackTableModel m_trackTable;
