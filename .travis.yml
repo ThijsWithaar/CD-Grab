@@ -5,47 +5,24 @@ os:
 dist: xenial
 compiler: clang
 
-
 services:
  - docker
 
+env:
+  DOCKER_BUILD_DIR=/build
 
 before_install:
- # Prepare the docker image
- #- docker pull debian:sid
- #- docker build -t debian:sid .
- #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
  - docker pull thijswithaar/sid
- - docker run -it -d --name build thijswithaar/sid
- - docker exec build apt update -q
- - docker exec build apt upgrade -y
- #  fi
-
-install:
- # Copy source code to docker
- #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
- #- echo "${TRAVIS_BUILD_DIR}"
- #- ls ${TRAVIS_BUILD_DIR}
- - docker exec build mkdir -p ${TRAVIS_BUILD_DIR}
- - docker cp ${TRAVIS_BUILD_DIR}/. build:${TRAVIS_BUILD_DIR}
- - docker exec build ls ${TRAVIS_BUILD_DIR}
-
- #fi
-
+ - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name build thijswithaar/sid
 
 script:
- - docker exec build cmake -GNinja -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
- - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja package
- - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja test
- - docker cp build:${TRAVIS_BUILD_DIR}/build ${TRAVIS_BUILD_DIR}/build
-
-
-before_deploy:
- - git config --local user.name "${GIT_USER}"
- - git config --local user.email "${GIT_EMAIL}"
- #- export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
- #- git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
-
+ - ls -alF ${TRAVIS_BUILD_DIR}
+ - whoami
+ - docker exec build ls -alF ${DOCKER_BUILD_DIR}
+ - docker exec build whoami
+ - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${DOCKER_BUILD_DIR} -B${DOCKER_BUILD_DIR}/build
+ - docker exec build cmake --build ${DOCKER_BUILD_DIR}/build
+ - docker exec build cmake --build ${DOCKER_BUILD_DIR}/build -- package test
 
 deploy:
  provider: releases

@@ -4,27 +4,42 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Add repositories
 RUN apt update -q
-RUN apt install -y wget gnupg ca-certificates software-properties-common
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+RUN apt install -y apt-utils wget gnupg ca-certificates software-properties-common
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/unstable/ llvm-toolchain main"
 
 # Install latest version of build-tools and development libraries
-RUN apt update -q
-RUN apt upgrade -y
-RUN apt install -y apt-utils build-essential git cmake ninja-build clang-9
+RUN apt update -q  #1: force cache refresh
+RUN apt upgrade -y #1: force cache refresh
+RUN apt install -y build-essential git cmake ninja-build clang-9 lld-9
 RUN apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
-RUN apt install -y libeigen3-dev
+RUN apt install -y libeigen3-dev doxygen locales tzdata
 
 # Register the compiler
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90
 RUN update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-9 90
+RUN update-alternatives --install /usr/bin/lld lld /usr/bin/lld-9 90
 RUN update-alternatives --config clang
 RUN update-alternatives --config clang++
+RUN update-alternatives --config lld
 
 # Catch2 is not yet in a repo, so build+install ourselves
-RUN git clone https://github.com/catchorg/Catch2.git /catch2
-RUN cmake -H/catch2 -B/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
-RUN cmake --build /catch2.build -- install
+RUN git clone https://github.com/catchorg/Catch2.git /tmp/catch2
+RUN cmake -H/tmp/catch2 -B/tmp/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
+RUN cmake --build /tmp/catch2.build -- install
+
+# Setup locale. Qt5 linguist seems confused, maybe this is it?
+RUN echo -e "Europe/Amsterdam" > /etc/timezone
+RUN dpkg-reconfigure -f noninteractive tzdata
+RUN echo -e 'LANG="en_US.UTF-8"\nLANGUAGE="en_US:en"\n' > /etc/default/locale
+RUN dpkg-reconfigure -f noninteractive locales
+
+# Add a non-root user
+RUN useradd docker && echo "docker:docker" | chpasswd
+RUN mkdir -p /home/docker && chown -R docker:docker /home/docker
+# And match user/group of the travis CI, so volumes show up with correct rights
+RUN groupadd -g 2000 travis && useradd -g travis -u 2000 travis && echo "travis:travis" | chpasswd
+RUN mkdir -p /home/travis && chown -R travis:travis /home/travis
 
 # TODO: Bring in the visual studio tools in wine.
 # Then use
