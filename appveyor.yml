@@ -1,5 +1,6 @@
 image:
  - Visual Studio 2017
+ - ubuntu1804
 
 configuration:
  - release      # lower-case might be needed for VCPKG_BUILD_TYPE
@@ -25,25 +26,29 @@ init:
  #- dir C:\Qt
  #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
  #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
- - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
- - echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
- - type %VCPKG_DIR%\triplets\x64-windows.cmake
- - set Path=%QT_DIR%\bin;%Path%
+ - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+ - cmd: echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
+ - cmd: type %VCPKG_DIR%\triplets\x64-windows.cmake
+ - cmd: set Path=%QT_DIR%\bin;%Path%
 
 install:
- - cd c:\tools\vcpkg
- - git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
- - git fetch twithaar
- - git checkout twithaar/soxr -b soxr
- - vcpkg update
- #- vcpkg build opus
- - vcpkg install catch2 libflac opus soxr
- - vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
- #- vcpkg install qt5 # This one takes too long, use a pre-compiled version
- - vcpkg integrate install
+ - cmd: cd c:\tools\vcpkg
+ - cmd: git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
+ - cmd: git fetch twithaar
+ - cmd: git checkout twithaar/soxr -b soxr
+ - cmd: vcpkg update
+ - cmd: vcpkg install catch2 libflac opus soxr
+ - cmd: vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
+ - cmd: vcpkg integrate install
+ # ubuntu
+ - sh: apt upgrade -y
+ - sh: apt install -y build-essential git cmake clang-9
+ - sh: apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
+
 
 before_build:
- - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
+ - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
+ - sh: cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
  - dir %APPVEYOR_BUILD_FOLDER%\build
 
 build_script:

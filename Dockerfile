@@ -11,7 +11,7 @@ RUN apt-add-repository "deb http://apt.llvm.org/unstable/ llvm-toolchain main"
 RUN apt update -q
 RUN apt upgrade -y
 RUN apt install -y build-essential git cmake clang-9
-RUN apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev libboost-all-dev
+RUN apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
 RUN apt install -y libeigen3-dev
 
 # Register the compiler
