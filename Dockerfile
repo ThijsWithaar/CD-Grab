@@ -3,14 +3,13 @@ FROM debian:sid
 # Add repositories
 RUN apt update -q
 RUN apt install -y wget gnupg ca-certificates software-properties-common
-RUN wget https://apt.llvm.org/llvm-snapshot.gpg.key
-RUN apt-key add llvm-snapshot.gpg.key
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/unstable/ llvm-toolchain main"
 
 # Install latest version of build-tools and development libraries
 RUN apt update -q
 RUN apt upgrade -y
-RUN apt install -y build-essential git cmake clang-9
+RUN apt install -y build-essential git cmake ninja clang-9
 RUN apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
 RUN apt install -y libeigen3-dev
 
