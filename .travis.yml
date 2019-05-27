@@ -34,8 +34,9 @@ install:
 
 
 script:
- - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
- - docker exec build cmake --build ${TRAVIS_BUILD_DIR}/build -- package test
+ - docker exec build cmake -GNinja -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
+ - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja package
+ - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja test
  - docker cp build:${TRAVIS_BUILD_DIR}/build ${TRAVIS_BUILD_DIR}/build
 
 

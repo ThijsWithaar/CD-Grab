@@ -5,8 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Add repositories
 RUN apt update -q
 RUN apt install -y wget gnupg ca-certificates software-properties-common
-RUN wget https://apt.llvm.org/llvm-snapshot.gpg.key
-RUN apt-key add llvm-snapshot.gpg.key
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/unstable/ llvm-toolchain main"
 
 # Install latest version of build-tools and development libraries

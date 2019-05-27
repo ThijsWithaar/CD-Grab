@@ -8,7 +8,7 @@ configuration:
 platform:
  - x64
 
-clone_folder: c:\projects\cd_grab
+#clone_folder: c:\projects\cd_grab
 
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
@@ -31,7 +31,9 @@ init:
  - cmd: type %VCPKG_DIR%\triplets\x64-windows.cmake
  - cmd: set Path=%QT_DIR%\bin;%Path%
 
+
 install:
+ # Windows
  - cmd: cd c:\tools\vcpkg
  - cmd: git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
  - cmd: git fetch twithaar
@@ -40,26 +42,42 @@ install:
  - cmd: vcpkg install catch2 libflac opus soxr
  - cmd: vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
  - cmd: vcpkg integrate install
- # ubuntu
- - sh: apt upgrade -y
- - sh: apt install -y build-essential git cmake clang-9
- - sh: apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
+ - cmd: cd %APPVEYOR_BUILD_FOLDER%
+ # Ubuntu: updated cmake, clang and boost
+ - sh: wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+ - sh: wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+ - sh: sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main"
+ - sh: sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
+ - sh: sudo add-apt-repository ppa:mhier/libboost-latest
+ - sh: sudo apt update -q
+ #- sh: sudo apt upgrade -y
+ - sh: sudo apt install -yq build-essential git cmake clang-9 libboost1.68-dev
+ - sh: sudo apt install -yq libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev
+ # Catch2 is not yet in a repo, so build+install ourselves
+ - sh: git clone https://github.com/catchorg/Catch2.git ~/catch2
+ - sh: cmake -H~/catch2 -B~/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
+ - sh: sudo cmake --build ~/catch2.build -- install
 
 
 before_build:
  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=%QT_DIR% -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
- - sh: cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H%APPVEYOR_BUILD_FOLDER% -B%APPVEYOR_BUILD_FOLDER%/build
- - dir %APPVEYOR_BUILD_FOLDER%\build
+ - sh: cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${APPVEYOR_BUILD_FOLDER} -B${APPVEYOR_BUILD_FOLDER}/build
+
 
 build_script:
- - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- package
+ - cmake --build ./build -- package
+ - sh: ls ./build
+
 
 test_script:
- - cmake --build %APPVEYOR_BUILD_FOLDER%/build -- test
+ - cmake --build ./build -- test
+
 
 artifacts:
  - path: build\*.exe
    name: windows_installer
+ - path: build\*.deb
+   name: ubuntu_installer
 
 #skip_tags: true
 
@@ -77,5 +95,11 @@ deploy:
     branch: master
     APPVEYOR_REPO_TAG: true
 
-cache:
- - c:\tools\vcpkg\installed\
+for:
+-
+  matrix:
+    only:
+      - image: Visual Studio 2017
+
+  cache:
+    - c:\tools\vcpkg\installed\

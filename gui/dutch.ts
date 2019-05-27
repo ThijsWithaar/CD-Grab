@@ -90,180 +90,176 @@
     <name>MainWindow</name>
     <message>
         <location filename="main.ui" line="14"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="292"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="321"/>
         <source>CD Grab</source>
         <translation>CD Pakker</translation>
     </message>
     <message>
         <location filename="main.ui" line="31"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="110"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="110"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="298"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="329"/>
         <source>Device Settings</source>
         <translation>Apparaat instellingen</translation>
     </message>
     <message>
         <location filename="main.ui" line="42"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="111"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="111"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="299"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="330"/>
         <source>Device</source>
         <translation>Apparaat</translation>
     </message>
     <message>
         <location filename="main.ui" line="49"/>
         <location filename="main.ui" line="53"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="112"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="116"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="112"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="116"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="300"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="304"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="331"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="335"/>
         <source>/dev/cdrom</source>
         <translation>k/dev/cdrom</translation>
     </message>
     <message>
         <location filename="main.ui" line="58"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="113"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="113"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="301"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="332"/>
         <source>dev/dvd</source>
         <translation>dev/dvd</translation>
     </message>
     <message>
         <location filename="main.ui" line="63"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="114"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="114"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="302"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="333"/>
         <source>/dev/sda</source>
         <translation>/dev/sda</translation>
     </message>
     <message>
         <location filename="main.ui" line="71"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="305"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="336"/>
         <source>Drive</source>
         <translation>Loopwerk</translation>
     </message>
     <message>
         <location filename="main.ui" line="85"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="306"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="337"/>
         <source>Disc</source>
         <translation>Schijf</translation>
     </message>
     <message>
         <location filename="main.ui" line="104"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="307"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="338"/>
         <source>Actions</source>
         <translation>Taken</translation>
     </message>
     <message>
         <location filename="main.ui" line="110"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="308"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="339"/>
         <source>Eject</source>
         <translation>Uitwerpen</translation>
     </message>
     <message>
         <location filename="main.ui" line="120"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="309"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="340"/>
         <source>Grab</source>
         <translation>Pak</translation>
     </message>
     <message>
         <location filename="main.ui" line="127"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="310"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="341"/>
         <source>Encode</source>
         <translation>Omschrijven</translation>
     </message>
     <message>
         <location filename="main.ui" line="134"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="311"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="342"/>
         <source>Abort</source>
         <translation>Afbreken</translation>
     </message>
     <message>
         <location filename="main.ui" line="164"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="312"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="343"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="main.ui" line="178"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="313"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="344"/>
         <source>UPC</source>
         <translation>Product Code</translation>
     </message>
     <message>
         <location filename="main.ui" line="188"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="314"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="345"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
         <location filename="main.ui" line="198"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="315"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="346"/>
         <source>Artist</source>
         <translation>Artiest</translation>
     </message>
     <message>
         <location filename="main.ui" line="243"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="117"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="117"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="316"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="347"/>
         <source>Fi&amp;le</source>
         <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location filename="main.ui" line="249"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="317"/>
-        <source>Help</source>
-        <translation>Hulp</translation>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="348"/>
+        <source>He&amp;lp</source>
+        <oldsource>Help</oldsource>
+        <translation>Hu&amp;lp</translation>
     </message>
     <message>
-        <location filename="main.ui" line="262"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="106"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="106"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="293"/>
+        <location filename="main.ui" line="255"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="349"/>
+        <source>La&amp;nguage</source>
+        <translation>T&amp;aal</translation>
+    </message>
+    <message>
+        <location filename="main.ui" line="272"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="322"/>
         <source>&amp;Quit</source>
         <translation>&amp;Stoppen</translation>
     </message>
     <message>
-        <location filename="main.ui" line="265"/>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="108"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="108"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="295"/>
+        <location filename="main.ui" line="275"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="324"/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="main.ui" line="273"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="297"/>
+        <location filename="main.ui" line="284"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="326"/>
         <source>&amp;About</source>
         <translation>&amp;Over</translation>
     </message>
     <message>
-        <location filename="../build/cdGrab_autogen/include/ui_main.h" line="105"/>
-        <location filename="../build/gui/cdGrab_autogen/include/ui_main.h" line="105"/>
+        <location filename="main.ui" line="292"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="327"/>
+        <source>English</source>
+        <translation>Engels</translation>
+    </message>
+    <message>
+        <location filename="main.ui" line="300"/>
+        <location filename="../build/gui/cdGrabUi_autogen/include/ui_main.h" line="328"/>
+        <source>Dutch</source>
+        <translation>Nederlands</translation>
+    </message>
+    <message>
         <source>MainWindow</source>
-        <translation>Hoofd venster</translation>
+        <translation type="vanished">Hoofd venster</translation>
     </message>
 </context>
 <context>
     <name>Tags</name>
     <message>
         <location filename="tags.ui" line="14"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_tags.h" line="84"/>
         <source>Form</source>
         <translation>Fomulier</translation>
     </message>
     <message>
         <location filename="tags.ui" line="29"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_tags.h" line="85"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="tags.ui" line="40"/>
-        <location filename="../build/gui/cdGrabUi_autogen/include/ui_tags.h" line="86"/>
         <source>TextLabel</source>
         <translation>Tekst Label</translation>
     </message>

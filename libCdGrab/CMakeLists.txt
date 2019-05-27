@@ -1,4 +1,4 @@
-project(cdGrab LANGUAGES CXX VERSION 0.1)
+project(cdGrab LANGUAGES CXX DESCRIPTION "Library for grabbing and encoding audio-CD's")
 
 set(CDGRAB_ResamplerLib Sox CACHE STRING "Resampling library to use")
 set_property(CACHE CDGRAB_ResamplerLib PROPERTY STRINGS "Sox" "Samplerate")
