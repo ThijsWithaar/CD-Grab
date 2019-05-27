@@ -1,5 +1,5 @@
 
-project(cdGrabUi LANGUAGES CXX DESCRIPTION "Gui for grabbing of audio CD's" VERSION 0.1)
+project(cdGrabUi LANGUAGES CXX DESCRIPTION "Gui for grabbing of audio CD's")
 
 vcpkg_add_package(qt5)
 debian_add_package(qtbase5-dev qttools5-dev)
@@ -17,6 +17,9 @@ file(GLOB QTUI CONFIGURE_DEPENDS *.ui)
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} dutch.ts)
 configure_file(translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+
+message("CMAKE_SOURCE_DIR : ${CMAKE_SOURCE_DIR}")
+message("QM_FILES : ${QM_FILES}")
 
 
 add_executable(${PROJECT_NAME} WIN32
