@@ -42,6 +42,7 @@ install:
  - cmd: vcpkg install catch2 libflac opus soxr
  - cmd: vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
  - cmd: vcpkg integrate install
+ - cmd: cd %APPVEYOR_BUILD_FOLDER%
  # Ubuntu: updated cmake, clang and boost
  - sh: wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
  - sh: wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
