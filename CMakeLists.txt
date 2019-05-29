@@ -5,8 +5,10 @@ project(CdGrabProject LANGUAGES CXX VERSION 0.1)
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 
-if(EXISTS "/etc/debian_version")
-	set(DEBIAN TRUE CACHE BOOL "Enable debian specific options: 64-bit lib name and .deb generation")
+if(UNIX)
+	if(EXISTS "/etc/debian_version")
+		set(DEBIAN TRUE CACHE BOOL "Enable debian specific options: 64-bit lib name and .deb generation")
+	endif()
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
@@ -30,6 +32,7 @@ export(TARGETS
 set(CPACK_PACKAGE_NAME "CdGrab")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Audio-CD grabber, with error detection")
 set(CPACK_PACKAGE_CONTACT "thijs.withaar@gmail.com")
+set(CPACK_OUTPUT_FILE_PREFIX ${CMAKE_CURRENT_LIST_DIR}/build.packages)
 if(UNIX)
 	set(CPACK_DEBIAN_PACKAGE_DEPENDS "libopus libflac libsoxr qt5 libboost-filesystem (>=1.67.0)")
 	if(DEBIAN)

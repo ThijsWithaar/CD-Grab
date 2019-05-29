@@ -74,10 +74,8 @@ test_script:
 
 
 artifacts:
- - path: build\*.exe
-   name: windows_installer
- - path: build\*.deb
-   name: ubuntu_installer
+ - path: build.packages/*
+   name: installer
 
 #skip_tags: true
 
@@ -88,7 +86,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  artifact: windows_installer
+  artifact: installer
   draft: false
   force_update: true
   on:

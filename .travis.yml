@@ -9,11 +9,10 @@ services:
  - docker
 
 env:
-  DOCKER_BUILD_DIR=/home/travis/CD-Grab
+  DOCKER_BUILD_DIR=/home/travis/build/CD-Grab
   DOCKER_IMAGE=thijswithaar/ubuntu:local
 
 before_install:
- #- docker pull ${DOCKER_IMAGE}
  - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name build ${DOCKER_IMAGE}
 
 script:
@@ -34,7 +33,7 @@ deploy:
  name: "A New Hope"
  api_key: ${GithubToken}
  file_glob: true
- file: "${TRAVIS_BUILD_DIR}/build/*.deb"
+ file: "${TRAVIS_BUILD_DIR}/build.packages/*"
  overwrite: true
  skip_cleanup: true
  draft: false
