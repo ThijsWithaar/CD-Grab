@@ -9,8 +9,8 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|apt-key add -
 RUN apt-add-repository "deb http://apt.llvm.org/unstable/ llvm-toolchain main"
 
 # Install latest version of build-tools and development libraries
-RUN apt update -q  #1: force cache refresh
-RUN apt upgrade -y #1: force cache refresh
+RUN apt update -q
+RUN apt upgrade -y
 RUN apt install -y build-essential git cmake ninja-build clang-9 lld-9
 RUN apt install -y libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev libboost-all-dev
 RUN apt install -y libeigen3-dev doxygen locales tzdata
@@ -37,6 +37,7 @@ RUN dpkg-reconfigure -f noninteractive locales
 # Add a non-root user
 RUN useradd docker && echo "docker:docker" | chpasswd
 RUN mkdir -p /home/docker && chown -R docker:docker /home/docker
+
 # And match user/group of the travis CI, so volumes show up with correct rights
 RUN groupadd -g 2000 travis && useradd -g travis -u 2000 travis && echo "travis:travis" | chpasswd
 RUN mkdir -p /home/travis && chown -R travis:travis /home/travis

@@ -10,18 +10,20 @@ services:
 
 env:
   DOCKER_BUILD_DIR=/home/travis/CD-Grab
+  DOCKER_IMAGE=thijswithaar/ubuntu:local
 
 before_install:
- - docker pull thijswithaar/sid:local
- - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name build thijswithaar/sid
+ #- docker pull ${DOCKER_IMAGE}
+ - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name build ${DOCKER_IMAGE}
 
 script:
  - env
  - ls -alF ${TRAVIS_BUILD_DIR}
  - whoami
+ - docker exec build cat /etc/os-release
  - docker exec build ls -alF ${DOCKER_BUILD_DIR}
  - docker exec build whoami
- - docker exec build cmake -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${DOCKER_BUILD_DIR} -B${DOCKER_BUILD_DIR}/build
+ - docker exec build cmake -DCMAKE_BUILD_TYPE=RELEASE -H${DOCKER_BUILD_DIR} -B${DOCKER_BUILD_DIR}/build
  - docker exec build cmake --build ${DOCKER_BUILD_DIR}/build
  - docker exec build cmake --build ${DOCKER_BUILD_DIR}/build -- package test
 
