@@ -9,13 +9,14 @@ services:
  - docker
 
 env:
-  DOCKER_BUILD_DIR=/build
+  DOCKER_BUILD_DIR=/home/travis/CD-Grab
 
 before_install:
- - docker pull thijswithaar/sid
+ - docker pull thijswithaar/sid:local
  - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name build thijswithaar/sid
 
 script:
+ - env
  - ls -alF ${TRAVIS_BUILD_DIR}
  - whoami
  - docker exec build ls -alF ${DOCKER_BUILD_DIR}
