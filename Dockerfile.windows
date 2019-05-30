@@ -5,12 +5,12 @@ RUN @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -I
 # wait for vs_installer.exe, vs_installerservice.exe
 # or vs_installershell.exe because choco doesn't
 RUN powershell -NoProfile -InputFormat None -Command \
-    choco install python -y --params "/InstallDir:C:\tools\python3"; \
-    choco install python2 -y --params "/InstallDir:C:\tools\python2"; \
-    choco install git -y; \
-    choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'; \
-    choco install visualcpp-build-tools \
-        --version 15.0.26228.20170424 -y; \
+    choco install -y python --params "/InstallDir:C:\tools\python3"; \
+    choco install -y python2 --params "/InstallDir:C:\tools\python2"; \
+    choco install -y git; \
+    choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'; \
+    choco install -y visualcpp-build-tools \
+        --version 15.0.26228.20170424; \
     Write-Host 'Waiting for Visual C++ Build Tools to install'; \
     Wait-Process -Name vs_installer
 
