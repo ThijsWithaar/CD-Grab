@@ -13,6 +13,10 @@ vcpkg_add_package(libflac)
 debian_add_package(libflac-dev)
 find_package(Flac REQUIRED)
 
+if(APPLE)
+	find_package(Ogg)
+endif()
+
 vcpkg_add_package(opus)
 debian_add_package(libopus-dev)
 find_package(Opus REQUIRED)
@@ -33,8 +37,11 @@ file(GLOB SRC_FIL CONFIGURE_DEPENDS file/*.cc file/*.h)
 file(GLOB SRC_FUJI CONFIGURE_DEPENDS MtFuji/*.cc MtFuji/*.h)
 file(GLOB SRC_LIN CONFIGURE_DEPENDS linux/*.cc linux/*.h)
 file(GLOB SRC_WIN CONFIGURE_DEPENDS windows/*.cc windows/*.h)
+file(GLOB SRC_MAC CONFIGURE_DEPENDS macos/*.cc macos/*.h)
 if (WIN32)
 	set(SRC_OS ${SRC_WIN})
+elseif(APPLE)
+	set(SRC_OS ${SRC_MAC})
 elseif(UNIX)
 	set(SRC_OS ${SRC_LIN})
 endif()
@@ -67,8 +74,11 @@ target_link_libraries(${PROJECT_NAME}
 		Boost::serialization
 		Boost::system
 		FLAC::FLAC
+		$<$<PLATFORM_ID:Darwin>:Ogg::Ogg>
 		Opus::opus
 		Threads::Threads
+		$<$<PLATFORM_ID:Darwin>:/System/Library/Frameworks/Foundation.framework/Foundation>
+		$<$<PLATFORM_ID:Darwin>:/System/Library/Frameworks/IOKit.framework/IOKit>
 )
 
 

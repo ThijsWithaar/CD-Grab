@@ -15,7 +15,7 @@ configure_file(version.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
 file(GLOB SRC CONFIGURE_DEPENDS *.cc *.h)
 file(GLOB QTUI CONFIGURE_DEPENDS *.ui)
 
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/dutch.ts)
+#qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/dutch.ts)
 configure_file(translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
 message("CMAKE_SOURCE_DIR : ${CMAKE_SOURCE_DIR}")
@@ -26,7 +26,7 @@ add_executable(${PROJECT_NAME} WIN32
 	${SRC}
 	${QTUI}
 	${QM_FILES}
-	${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+#	${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
 	${CMAKE_CURRENT_BINARY_DIR}/version.cpp
 )
 

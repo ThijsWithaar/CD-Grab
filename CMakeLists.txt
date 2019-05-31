@@ -21,7 +21,9 @@ enable_testing()
 add_subdirectory(libCdGrab)
 add_subdirectory(gui)
 add_subdirectory(test)
-add_subdirectory(xbuild)
+if(UNIX)
+	add_subdirectory(xbuild)
+endif()
 
 
 export(TARGETS

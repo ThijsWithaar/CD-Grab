@@ -1,7 +1,7 @@
 # This is a cross-compiling version of arm32v7/debian:buster-slim
 # It has a modified qemu, which doesn't need kernel support to execute armv32v7 on x64
 FROM thijswithaar/raspbian:xbuild
-RUN xbuild start
+RUN ["xbuild", "start"]
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -35,7 +35,6 @@ RUN mkdir -p /home/docker && chown -R docker:docker /home/docker
 
 WORKDIR /home/docker
 
-# the qemu-shenanigangs do need lots of rights, this still isn't enough:
-# 	RUN chmod a+wx /usr/bin/xbuild /bin/sh /bin/dash /bin/sh.real /bin /usr/bin
-# for now, drop out of cross-build, relying on kernel binfmt support to run this:
-#RUN xbuild stop
+# Stop the cross-build, so cross-build can be controlled by other users as well
+# (otherwise root would own the lock /tmp/__xbuild__)
+RUN ["xbuild", "stop"]

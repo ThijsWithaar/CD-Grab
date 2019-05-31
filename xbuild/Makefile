@@ -1,7 +1,7 @@
 all: qemu
 
 clean:
-	rm -rf bin
+	rm -rf qemu
 
 qemu:
 	sudo apt install libglib2.0-dev libpixman-1-dev

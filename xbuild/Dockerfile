@@ -12,4 +12,4 @@ RUN mv /bin/sh /bin/sh.real && ln -s /usr/bin/xbuild /bin/sh
 RUN ls -al /bin/sh /usr/bin/xbuild /bin/sh.real /bin/dash
 
 # Starting here would lock the file in /tmp down to root
-#RUN xbuild start
+#RUN ["xbuild", "start"]
