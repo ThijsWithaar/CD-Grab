@@ -1,5 +1,6 @@
-
 project(cdGrabUi LANGUAGES CXX DESCRIPTION "Gui for grabbing of audio CD's")
+
+find_package(Boost QUIET REQUIRED COMPONENTS serialization)
 
 vcpkg_add_package(qt5)
 debian_add_package(qtbase5-dev qttools5-dev)
@@ -18,10 +19,6 @@ file(GLOB QTUI CONFIGURE_DEPENDS *.ui)
 #qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/dutch.ts)
 configure_file(translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 
-message("CMAKE_SOURCE_DIR : ${CMAKE_SOURCE_DIR}")
-message("QM_FILES : ${QM_FILES}")
-
-
 add_executable(${PROJECT_NAME} WIN32
 	${SRC}
 	${QTUI}
@@ -36,12 +33,9 @@ target_link_libraries(${PROJECT_NAME}
 	PUBLIC
 		Qt5::Gui
 		Qt5::Widgets
+		Boost::serialization 	# currently only grabber.cc
 		cdGrab
 )
-
-if(UNIX)
-	set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE -s)
-endif(UNIX)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin COMPONENT ui)
 

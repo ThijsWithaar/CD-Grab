@@ -8,8 +8,6 @@ configuration:
 platform:
  - x64
 
-#clone_folder: c:\projects\cd_grab
-
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
     VCPKG_DEFAULT_TRIPLET: x64-windows

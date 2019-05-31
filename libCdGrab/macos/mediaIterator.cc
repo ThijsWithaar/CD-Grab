@@ -1,5 +1,7 @@
 #include "mediaIterator.h"
 
+#include <stdexcept>
+
 #include <sys/param.h>
 #include <paths.h>
 
