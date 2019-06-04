@@ -1,50 +1,62 @@
 language: cpp
-os:
-    - linux
-    # - windows
-dist: xenial
 compiler: clang
 
 
-services:
- - docker
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.2
+      #compiler: gcc
+      env:
+        - VCPKG_DIR=${TRAVIS_BUILD_DIR}/vcpkg
+        - CMAKE="cmake"
+        # https://blog.inventic.eu/2014/01/qt-on-osx-maverick-undefined-symbols-for-architecture-x86_64/
+        - CMAKE_SETUP="-DCMAKE_TOOLCHAIN_FILE=${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake -DQt5_DIR=/usr/local/opt/qt5/lib/cmake/Qt5"
+        # https://github.com/Microsoft/vcpkg/issues/4437#issuecomment-445600064
+        - LLVM_PACKAGE=clang+llvm-8.0.0-x86_64-apple-darwin
+      install:
+        #- export CC=gcc-8 CXX=g++-8
+        #- brew update && brew unlink gcc && brew install gcc@9 && export CC=gcc-9 CXX=g++-9
+        # https://embeddedartistry.com/blog/2017/2/20/installing-clangllvm-on-osx
+        # after https://github.com/mmcloughlin/hellollvm/blob/de9244a2cbfe399b354e70b44a2b28c03625890b/.travis.yml
+        - wget -qO- http://releases.llvm.org/8.0.0/${LLVM_PACKAGE}.tar.xz | tar xJ
+        - export LLVM_DIR=${TRAVIS_BUILD_DIR}/${LLVM_PACKAGE}
+        - export CXX=${LLVM_DIR}/bin/clang++
+        - export LDFLAGS="-L${LLVM_DIR}/lib -Wl,-rpath,${LLVM_DIR}/lib"
+        - export CXXFLAGS="-I${LLVM_DIR}/include -I${LLVM_DIR}/include/c++/v1/"
 
+        - brew install ninja
+        # Can't clone into VCPKG_DIR, because it's cached and can be non-empty.
+        # Also can't mv the git cloned archive: vcpkg/scripts/vcpkgTools.xml goes missing
+        - mv ${VCPKG_DIR} ${VCPKG_DIR}.cache
+        - git clone --depth 1 -b soxr https://github.com/ThijsWithaar/vcpkg.git ${VCPKG_DIR}
+        - cp -r ${VCPKG_DIR}.cache/* ${VCPKG_DIR}
+        - ${VCPKG_DIR}/bootstrap-vcpkg.sh
+        # Release-only problems with boost-thread: https://github.com/microsoft/vcpkg/issues/6717
+        #- echo "set(VCPKG_BUILD_TYPE release)" >> ${VCPKG_DIR}/triplets/x64-osx.cmake
+        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install boost-thread
+        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install boost-crc boost-format boost-filesystem boost-serialization boost-system
+        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install boost-asio
+        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install libflac opus soxr catch2
+      cache:
+        directories:
+         - vcpkg/installed
 
-before_install:
- # Prepare the docker image
- #- docker pull debian:sid
- #- docker build -t debian:sid .
- #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
- - docker pull thijswithaar/sid
- - docker run -it -d --name build thijswithaar/sid
- - docker exec build apt update -q
- - docker exec build apt upgrade -y
- #  fi
-
-install:
- # Copy source code to docker
- #- if [ "$TRAVIS_OS_NAME" == "linux" ]; then \
- #- echo "${TRAVIS_BUILD_DIR}"
- #- ls ${TRAVIS_BUILD_DIR}
- - docker exec build mkdir -p ${TRAVIS_BUILD_DIR}
- - docker cp ${TRAVIS_BUILD_DIR}/. build:${TRAVIS_BUILD_DIR}
- - docker exec build ls ${TRAVIS_BUILD_DIR}
-
- #fi
-
+    - os: linux
+      services: docker
+      dist: xenial
+      env:
+        - DOCKER_BUILD_DIR=${TRAVIS_BUILD_DIR}
+        - DOCKER_IMAGE=thijswithaar/ubuntu:local
+        - CMAKE="docker exec buildimg cmake"
+        - CMAKE_SETUP=""
+      install:
+        - docker run -it -d --user $(id -u):$(id -g) -v ${TRAVIS_BUILD_DIR}:${DOCKER_BUILD_DIR} -w ${DOCKER_BUILD_DIR} --name buildimg ${DOCKER_IMAGE}
 
 script:
- - docker exec build cmake -GNinja -DCMAKE_CXX_COMPILER=clang++-9 -DCMAKE_BUILD_TYPE=RELEASE -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
- - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja package
- - docker exec build cmake -E chdir ${TRAVIS_BUILD_DIR}/build ninja test
- - docker cp build:${TRAVIS_BUILD_DIR}/build ${TRAVIS_BUILD_DIR}/build
-
-
-before_deploy:
- - git config --local user.name "${GIT_USER}"
- - git config --local user.email "${GIT_EMAIL}"
- #- export TRAVIS_TAG="0.1.${TRAVIS_BUILD_NUMBER}"
- #- git tag "${TRAVIS_TAG}" "${TRAVIS_COMMIT}"
+ - ${CMAKE} ${CMAKE_SETUP} -DCMAKE_BUILD_TYPE=MinSizeRel -H${TRAVIS_BUILD_DIR} -B${TRAVIS_BUILD_DIR}/build
+ - ${CMAKE} --build ${TRAVIS_BUILD_DIR}/build
+ - ${CMAKE} --build ${TRAVIS_BUILD_DIR}/build -- package test
 
 
 deploy:
@@ -54,7 +66,7 @@ deploy:
  name: "A New Hope"
  api_key: ${GithubToken}
  file_glob: true
- file: "${TRAVIS_BUILD_DIR}/build/*.deb"
+ file: "${TRAVIS_BUILD_DIR}/build.packages/*"
  overwrite: true
  skip_cleanup: true
  draft: false

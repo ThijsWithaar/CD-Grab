@@ -8,8 +8,6 @@ configuration:
 platform:
  - x64
 
-#clone_folder: c:\projects\cd_grab
-
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
     VCPKG_DEFAULT_TRIPLET: x64-windows
@@ -22,7 +20,6 @@ init:
  - echo %VCPKG_DIR%
  - echo %VCPKG_DEFAULT_TRIPLET%
  - echo %CMAKE_GENERATOR%
- #- echo %QT_DIR%
  #- dir C:\Qt
  #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
  #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
@@ -66,7 +63,6 @@ before_build:
 
 build_script:
  - cmake --build ./build -- package
- - sh: ls ./build
 
 
 test_script:
@@ -74,10 +70,8 @@ test_script:
 
 
 artifacts:
- - path: build\*.exe
-   name: windows_installer
- - path: build\*.deb
-   name: ubuntu_installer
+ - path: build.packages/*
+   name: installer
 
 #skip_tags: true
 
@@ -88,7 +82,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: kb0a0ovLyJt0Um5ZFdnFOxalcytOF0kqX1vR+/Q+hMKnQsrVA5z28ivHaNoFVN3r
-  artifact: windows_installer
+  artifact: installer
   draft: false
   force_update: true
   on:
