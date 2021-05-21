@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.10)
 # Cmake needs a project name, otherwise Qt linking with winMain goes wrong...
 project(CdGrabProject LANGUAGES CXX VERSION 0.1)
 
+# Allow grouping of projects in visual studio
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 
 if(UNIX)
@@ -20,6 +23,7 @@ enable_testing()
 
 add_subdirectory(libCdGrab)
 add_subdirectory(gui)
+add_subdirectory(nrg2dts)
 add_subdirectory(test)
 if(UNIX AND NOT APPLE)
 	add_subdirectory(xbuild)

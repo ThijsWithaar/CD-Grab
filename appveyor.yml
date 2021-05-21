@@ -13,7 +13,7 @@ environment:
     VCPKG_DEFAULT_TRIPLET: x64-windows
     #CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     CMAKE_GENERATOR: Ninja
-    VCPKG_BINARY_SOURCES=clear;files,C:\vcpkg.cache,readwrite
+    VCPKG_BINARY_SOURCES: clear;files,C:\vcpkg.cache,readwrite
     QT_DIR: C:\Qt\latest\msvc2019_64
 
 init:
