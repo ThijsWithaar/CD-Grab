@@ -1,5 +1,5 @@
 image:
- - Visual Studio 2017
+ - Visual Studio 2019
  - ubuntu1804
 
 configuration:
@@ -13,17 +13,19 @@ environment:
     VCPKG_DEFAULT_TRIPLET: x64-windows
     #CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     CMAKE_GENERATOR: Ninja
-    QT_DIR: C:\Qt\latest\msvc2017_64
+    VCPKG_BINARY_SOURCES=clear;files,C:\vcpkg.cache,readwrite
+    QT_DIR: C:\Qt\latest\msvc2019_64
 
 init:
  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
  - echo %VCPKG_DIR%
  - echo %VCPKG_DEFAULT_TRIPLET%
  - echo %CMAKE_GENERATOR%
+ - echo %VCPKG_BINARY_SOURCES%
  #- dir C:\Qt
- #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
- #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2017"
- - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+ - dir "C:\Program Files (x86)\Microsoft Visual Studio"
+ - dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+ - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
  - cmd: echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
  - cmd: type %VCPKG_DIR%\triplets\x64-windows.cmake
  - cmd: set Path=%QT_DIR%\bin;%Path%
@@ -33,11 +35,9 @@ install:
  # Windows
  - cmd: cd c:\tools\vcpkg
  - cmd: git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
- - cmd: git fetch twithaar
- - cmd: git checkout twithaar/soxr -b soxr
- - cmd: vcpkg update
- - cmd: vcpkg install catch2 libflac opus soxr
- - cmd: vcpkg install boost-beast boost-crc boost-filesystem boost-format boost-serialization boost-system
+ #- cmd: git fetch twithaar
+ #- cmd: git checkout twithaar/soxr -b soxr
+ #- cmd: vcpkg update
  - cmd: vcpkg integrate install
  - cmd: cd %APPVEYOR_BUILD_FOLDER%
  # Ubuntu: updated cmake, clang and boost
@@ -93,7 +93,7 @@ for:
 -
   matrix:
     only:
-      - image: Visual Studio 2017
+      - image: Visual Studio 2019
 
   cache:
-    - c:\tools\vcpkg\installed\
+    - c:\vcpkg.cache -> appveyor.yml
