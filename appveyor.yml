@@ -1,6 +1,6 @@
 image:
  - Visual Studio 2019
- - ubuntu1804
+ - ubuntu2004
 
 configuration:
  - release      # lower-case might be needed for VCPKG_BUILD_TYPE
@@ -11,20 +11,17 @@ platform:
 environment:
     VCPKG_DIR: C:\Tools\vcpkg
     VCPKG_DEFAULT_TRIPLET: x64-windows
-    #CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+    #CMAKE_GENERATOR: Visual Studio 16 2019
     CMAKE_GENERATOR: Ninja
     VCPKG_BINARY_SOURCES: clear;files,C:\vcpkg.cache,readwrite
     QT_DIR: C:\Qt\latest\msvc2019_64
 
 init:
  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
- - echo %VCPKG_DIR%
- - echo %VCPKG_DEFAULT_TRIPLET%
- - echo %CMAKE_GENERATOR%
- - echo %VCPKG_BINARY_SOURCES%
  #- dir C:\Qt
- - dir "C:\Program Files (x86)\Microsoft Visual Studio"
- - dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio"
+ #- dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+ - cmd: set CMAKE_GENERATOR_PLATFORM=x64
  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
  - cmd: echo.set(VCPKG_BUILD_TYPE %CONFIGURATION%)>> %VCPKG_DIR%\triplets\%PLATFORM%-windows.cmake
  - cmd: type %VCPKG_DIR%\triplets\x64-windows.cmake
@@ -34,24 +31,22 @@ init:
 install:
  # Windows
  - cmd: cd c:\tools\vcpkg
- - cmd: git remote add twithaar https://github.com/ThijsWithaar/vcpkg.git
- #- cmd: git fetch twithaar
- #- cmd: git checkout twithaar/soxr -b soxr
- #- cmd: vcpkg update
+ - cmd: git pull
+ - cmd: .\bootstrap-vcpkg.bat
  - cmd: vcpkg integrate install
  - cmd: cd %APPVEYOR_BUILD_FOLDER%
  # Ubuntu: updated cmake, clang and boost
- - sh: wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
- - sh: wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
- - sh: sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main"
- - sh: sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
- - sh: sudo add-apt-repository ppa:mhier/libboost-latest
+ #- sh: wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+ #- sh: wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+ #- sh: sudo apt-add-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main"
+ #- sh: sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
+ #- sh: sudo add-apt-repository ppa:mhier/libboost-latest
  - sh: sudo apt update -q
  #- sh: sudo apt upgrade -y
- - sh: sudo apt install -yq build-essential git cmake clang-9 libboost1.68-dev
- - sh: sudo apt install -yq libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev
+ - sh: sudo apt install -yq build-essential cmake clang-11
+ - sh: sudo apt install -yq libboost-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev libboost-serialization-dev libboost-system-dev libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev
  # Catch2 is not yet in a repo, so build+install ourselves
- - sh: git clone https://github.com/catchorg/Catch2.git ~/catch2
+ - sh: git clone -b v2.x https://github.com/catchorg/Catch2.git ~/catch2
  - sh: cmake -H~/catch2 -B~/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
  - sh: sudo cmake --build ~/catch2.build -- install
 
@@ -96,4 +91,4 @@ for:
       - image: Visual Studio 2019
 
   cache:
-    - c:\vcpkg.cache -> appveyor.yml
+    - c:\vcpkg.cache -> vcpkg.json

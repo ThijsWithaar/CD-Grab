@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
   "name": "cdgrab",
   "version": "0.1",
+  "builtin-baseline": "4c830b15161ac060fb48d175e0031677ba6e773e",
   "dependencies": [
 	"catch2",
 	"libflac",
@@ -11,6 +12,8 @@
 	"boost-crc",
 	"boost-filesystem",
 	"boost-format",
+	"boost-iostreams",
+	"boost-program-options",
 	"boost-serialization",
 	"boost-system"
   ]
