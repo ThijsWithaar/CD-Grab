@@ -23,13 +23,11 @@ matrix:
         # Can't clone into VCPKG_DIR, because it's cached and can be non-empty.
         # Also can't mv the git cloned archive: vcpkg/scripts/vcpkgTools.xml goes missing
         - mv ${VCPKG_DIR} ${VCPKG_DIR}.cache
-        - git clone --depth 1 -b soxr https://github.com/ThijsWithaar/vcpkg.git ${VCPKG_DIR}
+        - git clone --depth 1 https://github.com/microsoft/vcpkg ${VCPKG_DIR}
         - cp -r ${VCPKG_DIR}.cache/* ${VCPKG_DIR}
         - ${VCPKG_DIR}/bootstrap-vcpkg.sh
         # Release-only problems with boost-thread: https://github.com/microsoft/vcpkg/issues/6717
         #- echo "set(VCPKG_BUILD_TYPE release)" >> ${VCPKG_DIR}/triplets/x64-osx.cmake
-        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install boost-asio boost-crc boost-format boost-filesystem boost-serialization boost-system boost-thread
-        - ${TRAVIS_BUILD_DIR}/vcpkg/vcpkg install libflac opus soxr catch2
       cache:
         directories:
          - vcpkg/installed
