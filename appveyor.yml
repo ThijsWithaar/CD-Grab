@@ -46,7 +46,7 @@ install:
  - sh: sudo apt install -yq build-essential cmake clang-11
  - sh: sudo apt install -yq libboost-dev libboost-filesystem-dev libboost-iostreams-dev libboost-program-options-dev libboost-serialization-dev libboost-system-dev libflac-dev libopus-dev libsoxr-dev qtbase5-dev qttools5-dev
  # Catch2 is not yet in a repo, so build+install ourselves
- - sh: git clone -b v2.x https://github.com/catchorg/Catch2.git ~/catch2
+ - sh: git clone https://github.com/catchorg/Catch2.git ~/catch2
  - sh: cmake -H~/catch2 -B~/catch2.build -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=/usr
  - sh: sudo cmake --build ~/catch2.build -- install
 

@@ -1,5 +1,5 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](LICENSE)
-[![Travis build status](https://travis-ci.com/ThijsWithaar/CD-Grab.svg?token=qVpJoyee77Q7ST7dzg8M&branch=master)](https://travis-ci.com/ThijsWithaar/CD-Grab)
+[![Gitub actions](https://github.com/ThijsWithaar/CD-Grab/actions/workflows/cmake.yml/badge.svg)](https://github.com/ThijsWithaar/CD-Grab/actions)
 [![Appveyor build status](https://ci.appveyor.com/api/projects/status/gb1n3yhfvhp171ni/branch/master?svg=true)](https://ci.appveyor.com/project/ThijsWithaar/cd-grab/branch/master)
 [![Github all releases](https://img.shields.io/github/downloads/ThijsWithaar/CD-Grab/total.svg)](https://GitHub.com/ThijsWithaar/CD-Grab/releases/)
 
